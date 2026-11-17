@@ -2,6 +2,13 @@
 
 把 FoloToy AI Passport 变成一块工牌。这个插件负责在电脑上维护工牌内容，并同步到设备。
 
+## 安装
+
+1. 在 Harness 插件市场搜 `albis-aipassport-badge` 安装，或运行
+   `dsh plugin --profile desktop add albis-aipassport-badge`，然后重启 Harness。
+2. 设备刷入 FoloToy AI Passport 社区的「赛博工牌」玩法。
+3. 设备上长按 OK 进设置配好 2.4G Wi-Fi，屏幕出现 4 位配对码；Harness 插件页顶部出现同样的码，核对后点“允许”。
+
 ## 能做什么
 
 工牌有四页，▲▼ 翻页：
@@ -46,6 +53,6 @@ npm test                              # 全部测试
 node scripts/dev-server.mjs 8897      # 用临时数据跑服务
 ```
 
-设备固件在 FoloToy 官方 ai-passport 仓库的 `feature/cyber-badge` 分支（`main/cb_*.c`）。
+设备固件是 FoloToy AI Passport 社区的玩法「赛博工牌」，在官方社区页刷入即可；插件 0.6.x 对应固件 0.6.x。
 
 字体：编辑页用得意黑 Smiley Sans（OFL-1.1，许可见 `assets/SmileySans-OFL.txt`）。

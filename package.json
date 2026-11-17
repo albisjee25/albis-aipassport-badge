@@ -4,18 +4,57 @@
   "description": "Cyber badge for FoloToy AI Passport on DeepSeek Harness: edit your badge, pixel avatar, skins, notes and answers on the computer, synced to the device. AI Passport 赛博工牌。",
   "author": "albis",
   "license": "MIT",
-  "keywords": ["dsh-plugin", "deepseek", "harness", "dsh", "ai-passport", "folotoy", "badge", "esp32"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albisjee25/albis-aipassport-badge.git"
+  },
+  "homepage": "https://github.com/albisjee25/albis-aipassport-badge#readme",
+  "bugs": {
+    "url": "https://github.com/albisjee25/albis-aipassport-badge/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek",
+    "harness",
+    "dsh",
+    "ai-passport",
+    "folotoy",
+    "badge",
+    "esp32"
+  ],
   "type": "module",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
     "./icon": "./icon.svg"
   },
-  "files": ["index.js", "client.js", "cordis.patch.yml", "admin.html", "lib", "assets", "icon.svg", "README.md", "LICENSE"],
-  "scripts": { "test": "node --test test/*.test.js" },
-  "engines": { "node": ">=22" },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "admin.html",
+    "lib",
+    "assets",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "dsh": {
-    "bundle": { "patch": "./cordis.patch.yml" },
-    "client": { "platform": "web", "immediately": true, "inject": ["@deepseek-ai/dsh-client-ui-sidebar"] }
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
   }
 }
