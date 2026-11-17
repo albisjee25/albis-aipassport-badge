@@ -79,7 +79,7 @@ test('在工牌上切状态：电脑上的资料跟着变', async () => {
   const app = await boot()
   try {
     const h = { 'X-Device-Token': await pair(app) }
-    const r = await app.call('/api/device/state', { method: 'POST', headers: h, body: { status: 3, theme: 1, memo_done: 0, touches: 12, lucky: 0, battery: 88, fw: '0.6.0' } })
+    const r = await app.call('/api/device/state', { method: 'POST', headers: h, body: { status: 3, theme: 1, memo_done: 0, touches: 12, lucky: 0, battery: 88, fw: '0.6.1' } })
     assert.equal(r.status, 200)
     const snap = await app.call('/api/profile')
     assert.equal(snap.json.profile.status, 3)

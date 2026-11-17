@@ -25,9 +25,9 @@ test('默认资料本身合法，normalize 两次结果不变', () => {
 
 test('每个字段都不超过设备上的存储空间', () => {
   const long = '特别特别长的文字'.repeat(20)
-  const p = normalize({ name: long, handle: long, title: long, dept: long, emp_id: 'X'.repeat(99), tagline: long, mbti: 'entp-extra-long', sign: long,
+  const p = normalize({ name: long, handle: long, title: long, dept: long, emp_id: 'X'.repeat(99), tagline: long, mbti: 'entp-extra-long',
     statuses: Array(9).fill(long), status: 99, theme: 99, answers: Array(20).fill(long), memos: Array(9).fill(long) })
-  for (const k of ['name', 'handle', 'title', 'dept', 'emp_id', 'tagline', 'mbti', 'sign']) assert.ok(bytes(p[k]) <= LIMITS[k], k)
+  for (const k of ['name', 'handle', 'title', 'dept', 'emp_id', 'tagline', 'mbti']) assert.ok(bytes(p[k]) <= LIMITS[k], k)
   assert.equal(p.statuses.length, LIMITS.statuses)
   assert.ok(p.statuses.every((t) => [...t].length <= 4))            // 竖着写，最多 4 个字
   assert.ok(p.status < p.statuses.length)
@@ -49,6 +49,7 @@ test('乱七八糟的输入不会让资料坏掉', () => {
     assert.ok(Array.isArray(p.memos) && Array.isArray(p.answers))
   }
   assert.deepEqual(normalize({ statuses: [] }).statuses, ['在线'])
+  assert.equal('sign' in normalize({ sign: '双子座' }), false)                        // 星座不再保留
   assert.equal('tags' in normalize({ tags: ['露营'] }), false)                       // 旧版的“找我聊”不再保留
   assert.deepEqual(normalize({ statuses: ['专注中 勿扰'] }).statuses, ['专注中勿'])   // 去空格，截到 4 个字
 })
@@ -92,7 +93,7 @@ test('发给设备的资料字段和固件解析的一致', (t) => {
 
 test('最长的资料也装得进设备的接收缓冲区', () => {
   const long = '龘'.repeat(40)
-  const p = normalize({ name: long, handle: 'W'.repeat(30), title: long, dept: long, emp_id: '9'.repeat(30), tagline: long, mbti: 'ENTP', sign: long,
+  const p = normalize({ name: long, handle: 'W'.repeat(30), title: long, dept: long, emp_id: '9'.repeat(30), tagline: long, mbti: 'ENTP',
     statuses: Array(6).fill(long), answers: Array(8).fill(long), memos: Array(4).fill({ text: long, done: true }) })
   assert.ok(Buffer.byteLength(JSON.stringify({ version: 4294967295, changed: true, profile: devicePayload(p) })) < 4095)
 })
@@ -102,7 +103,7 @@ test('字段上限不超过固件里的存储空间', (t) => {
   const h = readFileSync(new URL('cb_model.h', FW), 'utf8')
   const size = (re) => Number(re.exec(h)[1])
   const cap = { name: size(/char name\[(\d+)\]/), handle: size(/char handle\[(\d+)\]/), title: size(/char title\[(\d+)\]/), dept: size(/char dept\[(\d+)\]/),
-    emp_id: size(/char emp_id\[(\d+)\]/), tagline: size(/char tagline\[(\d+)\]/), mbti: size(/char mbti\[(\d+)\]/), sign: size(/char sign\[(\d+)\]/),
+    emp_id: size(/char emp_id\[(\d+)\]/), tagline: size(/char tagline\[(\d+)\]/), mbti: size(/char mbti\[(\d+)\]/),
     status: size(/char statuses\[CB_STATUSES\]\[(\d+)\]/), answer: size(/char cards\[CB_CARDS\]\[(\d+)\]/), memo: size(/char memos\[CB_MEMOS\]\[(\d+)\]/) }
   for (const [k, n] of Object.entries(cap)) assert.ok(LIMITS[k] <= n - 1, `${k}: ${LIMITS[k]} > ${n - 1}`)
   const count = (name) => Number(new RegExp(`#define ${name}\\s+(\\d+)`).exec(h)[1])
