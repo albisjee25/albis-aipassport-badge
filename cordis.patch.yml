@@ -1,0 +1,5 @@
+# 把“赛博工牌”插入 Harness 的插件列表。端口等设置在 Harness 的插件页改。
+- insert:
+    - id: cyber-badge
+      name: 'albis-aipassport-badge'
+      config: {}
