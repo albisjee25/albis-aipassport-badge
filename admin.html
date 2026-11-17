@@ -71,6 +71,10 @@ input[type=range]{accent-color:var(--acid);width:100%}
 .sw.erase{background:repeating-conic-gradient(#2a2e39 0 25%,#14161c 0 50%) 0 0/12px 12px}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .tools small{color:var(--soft)}
+.presets{display:grid;grid-template-columns:repeat(auto-fill,44px);gap:8px;margin-top:8px}
+.preset{width:44px;height:44px;padding:4px;border:1px solid var(--line,#2a2d36);border-radius:8px;background:#C8FF3D22;cursor:pointer}
+.preset:hover,.preset:focus-visible{border-color:var(--acid,#C8FF3D);outline:none}
+.preset canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
 input[type=color]{width:38px;height:32px;padding:2px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
 .memos,.answers{display:flex;flex-direction:column;gap:8px}
 .memos div{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:center}
@@ -146,7 +150,8 @@ input[type=color]{width:38px;height:32px;padding:2px;border-radius:8px;border:1p
         <div>
           <div class="swatches" id="swatches"></div>
           <div class="tools"><small>改这支颜色</small><input type="color" id="recolor" aria-label="修改选中的颜色"></div>
-          <div class="tools" id="presets"><small>从预设开始</small></div>
+          <div class="tools"><small>从预设开始（会同时换掉调色板）</small></div>
+          <div class="presets" id="presets"></div>
           <div class="tools"><button class="btn" id="clear" type="button">清空画布</button></div>
         </div>
       </div>
@@ -406,7 +411,16 @@ async function refresh() {
 async function start() {
   $('#mbti').replaceChildren(...MBTI.map((m) => el('option', { value: m }, m || '不显示')))
   try { meta = await api('/api/meta') } catch { $('#down').style.display = 'block'; setTimeout(start, 3000); return }
-  $('#presets').append(...meta.presets.map((p) => el('button', { class: 'btn', type: 'button', onclick: () => { P.avatar = p.avatar; renderGrid(); changed() } }, p.name)))
+  $('#presets').append(...meta.presets.map((p) => {
+    const c = el('canvas', { width: 16, height: 16 })
+    const g = c.getContext('2d')
+    // Harness 重启前，运行中的旧版服务给的预设不带调色板：用经典预设的那套颜色画缩略图
+    const pal = p.palette || ['#000000', '#1B1D24', '#FF5263', '#C8FF3D', '#1B1D24', '#FFFFFF', '#8B6CFF', '#8B6CFF', '#FFFFFF', '#FFA826', '#3DD6FF', '#FF3DA5', '#35D07F', '#2E5BFF', '#E0483C', '#8A8F9C']
+    for (let i = 0; i < 256; i++) { const v = parseInt(p.avatar[i], 16); if (v) { g.fillStyle = pal[v]; g.fillRect(i % 16, i >> 4, 1, 1) } }
+    // 预设带自己的颜色：头像和调色板一起换
+    return el('button', { class: 'preset', type: 'button', title: p.name, 'aria-label': `预设头像：${p.name}`,
+      onclick: () => { P.avatar = p.avatar; if (p.palette) P.palette = [...p.palette]; renderGrid(); renderSwatches(); changed() } }, c)
+  }))
   document.addEventListener('input', (e) => {
     const t = e.target
     if (t.dataset.k) { P[t.dataset.k] = t.value; changed() }

@@ -116,7 +116,8 @@ test('编辑页和字体能打开', async () => {
     assert.equal(font.headers.get('content-type'), 'font/woff2')
     const meta = await app.call('/api/meta')
     assert.equal(meta.json.themes.length, 6)
-    assert.ok(meta.json.presets.length >= 4)
+    assert.ok(meta.json.presets.length >= 17)
+    assert.ok(meta.json.presets.every((p) => p.palette.length === 16))            // 每个预设带自己的调色板
     assert.equal((await app.call('/nope')).status, 404)
   } finally { await app.close() }
 })
