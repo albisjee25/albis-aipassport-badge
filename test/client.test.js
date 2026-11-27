@@ -64,7 +64,7 @@ test('有工牌请求配对：页面最上面出现配对码和按钮', () => {
 test('工牌从没连过：告诉主人怎么联网配对', () => {
   const t = pageText({ status: 'up', info: info({ device: { online: false, last_seen_s: null, battery: -1, touches: 0, lucky: 0, today: 0, days: [] } }) })
   assert.ok(t.includes('工牌还没连接过'))
-  assert.ok(t.includes('联网配置'))
+  assert.ok(t.includes('蓝牙配网'))
 })
 
 test('服务没起来：说明原因，不抛错', () => {
@@ -74,6 +74,6 @@ test('服务没起来：说明原因，不抛错', () => {
 
 test('按键说明和固件一致：四张卡片和摸鱼池的按法都在', () => {
   const t = pageText({ status: 'up', info: info() })
-  for (const s of ['切换状态', '划掉最上面一条', '翻出一个答案', '换皮肤', '自动回到工牌页', '撒鱼食', '对着麦克风吹气', '上岸']) assert.ok(t.includes(s), s)
-  assert.ok(!t.includes('NFC') && !t.includes('二维码'))
+  for (const s of ['切换状态', '切换下一张名片二维码', '长按标记完成', '一键息屏', '自动回到工牌页', '撒鱼食', '对着麦克风吹气', '上岸']) assert.ok(t.includes(s), s)
+  assert.ok(!t.includes('NFC') && !t.includes('答案之书'))
 })

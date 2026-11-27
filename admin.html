@@ -5,452 +5,1441 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>赛博工牌</title>
 <style>
-@font-face{font-family:"Smiley Sans";src:url("/assets/SmileySans-Oblique.woff2") format("woff2");font-display:swap}
-:root{--bg:#0B0C10;--panel:#14161C;--panel2:#1C1F27;--line:#2A2E39;--ink:#F2F4EE;--soft:#9096A3;--acid:#C8FF3D;--violet:#8B6CFF;--bad:#FF5A5A;--ok:#35D07F;--warn:#FFB02E;
-  --disp:"Smiley Sans","PingFang SC",sans-serif;--body:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 var(--body);-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--acid);outline-offset:2px}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:14px 28px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-header h1{margin:0;font:400 26px/1 var(--disp);letter-spacing:.02em}
-header h1 b{color:var(--acid);font-weight:400}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;background:var(--panel2);color:var(--soft);font-size:12.5px;white-space:nowrap}
-.pill i{width:7px;height:7px;border-radius:50%;background:var(--soft)}
-.pill.ok i{background:var(--ok)} .pill.bad i{background:var(--bad)} .pill.warn i{background:var(--warn)}
-.grow{flex:1}
-main{display:grid;grid-template-columns:392px minmax(0,1fr);gap:36px;max-width:1120px;margin:0 auto;padding:28px}
-.stage{position:sticky;top:86px;align-self:start}
-.tabs{display:flex;gap:6px;margin-bottom:14px}
-.tabs button{flex:1;padding:8px 0;border:1px solid var(--line);border-radius:10px;background:none;color:var(--soft);cursor:pointer}
-.tabs button[aria-selected=true]{background:var(--acid);border-color:var(--acid);color:#0B0C10;font-weight:600}
-/* 设备外壳：屏幕 240×320，放大 1.4 倍 */
-.shell{width:392px;padding:28px 28px 34px;border-radius:44px;background:linear-gradient(160deg,#23262f,#101217);border:1px solid #343947;box-shadow:0 30px 60px -30px #000}
-.screenbox{width:336px;height:448px;border-radius:42px;overflow:hidden;background:#000}
-.screen{position:relative;width:240px;height:320px;transform:scale(1.4);transform-origin:0 0;overflow:hidden;font-family:var(--body);color:var(--t-ink);background:var(--t-bg)}
-.screen *{position:absolute;margin:0;white-space:nowrap}
-.cut{overflow:hidden;text-overflow:ellipsis}
-.keys{display:flex;justify-content:center;gap:12px;margin-top:16px;color:#5c6270;font-size:11px}
-.keys span,.keys button{padding:3px 12px;border-radius:99px;border:1px solid #343947;background:none;color:inherit;font-size:11px}
-.keys button{cursor:pointer;color:#9096A3}
-.stage p.note{margin:14px 4px 0;color:var(--soft);font-size:12.5px}
-section{margin-bottom:22px;padding:22px 24px;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
-section>h2{margin:0 0 4px;font:400 22px/1.2 var(--disp);letter-spacing:.02em}
-section>p.lead{margin:0 0 16px;color:var(--soft)}
-.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
-.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-label.f{display:flex;flex-direction:column;gap:5px;color:var(--soft);font-size:12.5px;min-width:0}
-label.f.wide{grid-column:1/-1}
-input[type=text],input[type=tel],input[type=email],input[type=url],select{width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:14px}
-input:focus,select:focus{border-color:var(--acid);outline:none}
-.stat{display:grid;grid-template-columns:120px minmax(0,1fr) 38px;gap:12px;align-items:center;margin-top:10px}
-.stat output{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
-input[type=range]{accent-color:var(--acid);width:100%}
-.skins{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
-.skin{padding:0;border:2px solid transparent;border-radius:14px;cursor:pointer;background:none;text-align:left}
-.skin[aria-pressed=true]{border-color:var(--acid)}
-.skin div{height:64px;border-radius:11px;padding:8px;display:flex;flex-direction:column;justify-content:space-between}
-.skin b{font:400 15px/1 var(--disp)} .skin i{display:block;width:60%;height:6px;border-radius:3px}
-.statuses{display:flex;flex-direction:column;gap:8px}
-.statuses div{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center}
-.statuses i{width:12px;height:12px;border-radius:50%;justify-self:center}
-.seg{display:inline-flex;padding:3px;border-radius:11px;background:var(--panel2);border:1px solid var(--line)}
-.seg button{padding:6px 16px;border:0;border-radius:8px;background:none;color:var(--soft);cursor:pointer}
-.seg button[aria-pressed=true]{background:var(--ink);color:#0B0C10;font-weight:600}
-.btn{padding:7px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;white-space:nowrap}
-.btn:hover{border-color:var(--soft)}
-.btn.on{background:var(--acid);border-color:var(--acid);color:#0B0C10;font-weight:600}
-/* 像素头像 */
-.pix{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start}
-.grid{display:grid;grid-template-columns:repeat(16,20px);grid-auto-rows:20px;gap:1px;padding:6px;border-radius:12px;background:#000;border:1px solid var(--line);touch-action:none;cursor:crosshair;user-select:none;
-  background-image:linear-gradient(45deg,#15171c 25%,transparent 25%,transparent 75%,#15171c 75%),linear-gradient(45deg,#15171c 25%,transparent 25%,transparent 75%,#15171c 75%);background-size:14px 14px;background-position:0 0,7px 7px}
-.grid i{display:block;border-radius:2px;box-shadow:inset 0 0 0 .5px #ffffff14}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,30px);gap:7px;margin-bottom:12px}
-.sw{width:30px;height:30px;border-radius:8px;border:2px solid var(--line);cursor:pointer;padding:0}
-.sw[aria-pressed=true]{border-color:#fff;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acid)}
-.sw.erase{background:repeating-conic-gradient(#2a2e39 0 25%,#14161c 0 50%) 0 0/12px 12px}
-.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
-.tools small{color:var(--soft)}
-.presets{display:grid;grid-template-columns:repeat(auto-fill,44px);gap:8px;margin-top:8px}
-.preset{width:44px;height:44px;padding:4px;border:1px solid var(--line,#2a2d36);border-radius:8px;background:#C8FF3D22;cursor:pointer}
-.preset:hover,.preset:focus-visible{border-color:var(--acid,#C8FF3D);outline:none}
-.preset canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
-input[type=color]{width:38px;height:32px;padding:2px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
-.memos,.answers{display:flex;flex-direction:column;gap:8px}
-.memos div{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:center}
-.memos input[type=checkbox]{width:17px;height:17px;accent-color:var(--acid);justify-self:center}
-.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-/* 战绩 */
-.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.num{padding:14px 16px;border-radius:14px;background:var(--panel2)}
-.num b{display:block;font:400 34px/1.1 var(--disp);color:var(--acid)} .num span{color:var(--soft);font-size:12.5px}
-.days{display:flex;align-items:flex-end;gap:8px;height:74px;margin-top:16px}
-.days div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;color:var(--soft);font-size:11px}
-.days i{width:100%;max-width:34px;border-radius:5px 5px 2px 2px;background:var(--violet);min-height:2px}
-.empty{color:var(--soft)}
-#down{display:none;max-width:560px;margin:80px auto;padding:0 28px;text-align:center;color:var(--soft)}
-#down h2{font:400 30px var(--disp);color:var(--ink)}
-@media (max-width:900px){main{grid-template-columns:minmax(0,1fr);padding:18px}.stage{position:static;justify-self:center}header{padding:12px 18px;flex-wrap:wrap}
-  .row,.row.three,.answers{grid-template-columns:minmax(0,1fr)}.skins{grid-template-columns:repeat(3,minmax(0,1fr))}.pix{grid-template-columns:minmax(0,1fr)}.grid{justify-self:start}section{padding:18px 16px}.stat{grid-template-columns:96px minmax(0,1fr) 34px}}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0D0E12; color: #F3F4F6; font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif; }
+  body { display: flex; flex-direction: column; overflow: hidden; }
+  button, input, select { font: inherit; color: inherit; }
+
+  .topbar {
+    height: 64px; padding: 0 32px; background: #101218; border-bottom: 1px solid #222530;
+    display: flex; align-items: center; gap: 24px; flex-shrink: 0;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-size: 19px; font-weight: 800; letter-spacing: 0.3px; }
+  .brand-ico {
+    width: 24px; height: 22px; border-radius: 6px; border: 1.8px solid #C8FF3D;
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+  }
+  .brand-ico i { width: 4px; height: 4px; border-radius: 50%; background: #C8FF3D; display: block; }
+  .brand em { font-style: normal; color: #C8FF3D; }
+
+  .tabs { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: #171A22; border: 1px solid #252936; }
+  .tab {
+    padding: 6px 16px; border-radius: 7px; border: 0; background: transparent; color: #A6ADBD;
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .tab.on { background: #C8FF3D; color: #0D0E12; font-weight: 700; }
+
+  .spacer { flex: 1; }
+  .pair-bar { display: none; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 9px; background: #1B2019; border: 1px solid #C8FF3D; font-size: 12.5px; }
+  .pair-bar.show { display: flex; }
+  .pair-btn { padding: 4px 10px; border-radius: 6px; border: 0; background: #C8FF3D; color: #0D0E12; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .pair-deny { padding: 4px 8px; border-radius: 6px; border: 1px solid #353B4B; background: transparent; color: #A6ADBD; font-size: 12px; cursor: pointer; }
+
+  .sync-state { font-size: 12.5px; color: #6E7485; white-space: nowrap; }
+  .sync-state.dirty { color: #C8FF3D; }
+  .sync-btn {
+    padding: 8px 18px; border-radius: 9px; border: 0; background: #C8FF3D; color: #0D0E12;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .sync-btn:disabled { opacity: 0.6; cursor: wait; }
+
+  .workspace {
+    flex: 1; display: grid; grid-template-columns: 344px minmax(0, 1fr); gap: 36px;
+    padding: 24px 32px; overflow: hidden; max-width: 1400px; width: 100%; margin: 0 auto;
+  }
+
+  /* Left: pure 1:1 device preview shell (zero remote controls) */
+  .preview-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  .pv-switch {
+    width: 320px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    padding: 4px; border-radius: 11px; background: #14161D; border: 1px solid #222530;
+  }
+  .pv-switch button {
+    padding: 7px 0; border-radius: 8px; border: 0; background: transparent; color: #8B91A1;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .pv-switch button.on { background: #C8FF3D; color: #0D0E12; }
+
+  .shell {
+    width: 320px; padding: 18px 16px 20px; border-radius: 36px;
+    background: linear-gradient(165deg, #252934, #14161D); border: 1.5px solid #353B4B;
+    box-shadow: 0 32px 64px -24px #000; display: flex; flex-direction: column; align-items: center;
+  }
+  .lanyard { width: 56px; height: 9px; border-radius: 99px; background: #0D0E12; border: 1.5px solid #434959; margin-bottom: 14px; }
+  .screen-wrap { width: 288px; height: 384px; border-radius: 36px; overflow: hidden; background: #000; box-shadow: 0 0 0 2px #090A0E; }
+  .screen {
+    width: 240px; height: 320px; border-radius: 30px; transform: scale(1.2); transform-origin: 0 0;
+    position: relative; overflow: hidden; font-family: "Hiragino Sans GB", "Heiti SC", sans-serif;
+  }
+
+  /* Right editor panels (CRAP minimal hierarchy) */
+  .editor-col { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+  .card { padding: 18px 22px; border-radius: 16px; background: #14161D; border: 1px solid #222530; flex-shrink: 0; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; }
+  .card-head h2 { margin: 0; font-size: 16px; font-weight: 700; color: #F3F4F6; white-space: nowrap; flex-shrink: 0; }
+  .card-meta { font-family: Menlo, monospace; font-size: 12px; color: #6E7485; white-space: nowrap; }
+
+  .seg { display: inline-flex; padding: 3px; border-radius: 9px; background: #1B1E28; border: 1px solid #262A36; gap: 3px; }
+  .seg button {
+    padding: 5px 14px; border: 0; border-radius: 6px; background: transparent; color: #8B91A1;
+    font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .seg button.on { background: #F3F4F6; color: #0D0E12; }
+  .seg button.on-lime { background: #C8FF3D; color: #0D0E12; }
+
+  /* Style grid */
+  .style-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .style-btn {
+    padding: 12px 11px 10px; border-radius: 11px; border: 1.5px solid #252936; background: #181A22;
+    cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 10px;
+  }
+  .style-btn.on { border-color: #C8FF3D; background: #1B2019; }
+  .style-thumb {
+    height: 26px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 6px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .style-name { font-size: 13px; font-weight: 700; color: #D1D5E0; white-space: nowrap; }
+  .style-btn.on .style-name { color: #FFFFFF; }
+
+  .pal-row { margin-top: 14px; padding-top: 14px; border-top: 1px solid #1E212B; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pal-lbl { font-size: 12.5px; color: #8B91A1; margin-right: 4px; }
+  .pal-btn {
+    display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 9px;
+    border: 1.5px solid #252936; background: #181A22; color: #C5CBD9; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  .pal-btn.on { border-color: #C8FF3D; background: #1B2019; color: #FFFFFF; }
+  .swatch { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); flex-shrink: 0; }
+
+  /* Avatar grid */
+  .av-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 9px; }
+  .px-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .av-btn {
+    padding: 7px 5px; border-radius: 11px; border: 1.5px solid #252936; background: #181A22;
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .av-btn.on { border-color: #C8FF3D; background: #1B2019; }
+  .av-stage {
+    width: 100%; height: 74px; border-radius: 8px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+  }
+  .av-stage img { width: 68px; height: 68px; object-fit: contain; display: block; }
+  .av-name { font-size: 11.5px; font-weight: 600; color: #A6ADBD; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .av-btn.on .av-name { color: #FFFFFF; }
+
+  .upload-row { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 14px; align-items: stretch; }
+  .upload-prev {
+    height: 100px; border-radius: 10px; border: 1.5px solid #2C3140;
+    background: repeating-conic-gradient(#1B1E28 0 25%, #14161D 0 50%) 0 0 / 12px 12px;
+    display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+  }
+  .upload-prev img { width: 88px; height: 88px; object-fit: contain; display: block; }
+  .dropzone {
+    border-radius: 10px; border: 1.5px dashed #323747; background: #171A23; padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer;
+  }
+  .dropzone.drag { border-color: #C8FF3D; background: #1B2019; }
+  .btn-primary { padding: 8px 16px; border-radius: 9px; border: 0; background: #C8FF3D; color: #0D0E12; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .btn-ghost { padding: 6px 12px; border-radius: 8px; border: 1px solid #2E3342; background: #1B1E28; color: #F3F4F6; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+  /* Form grid */
+  .form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.span2 { grid-column: span 2; }
+  .field.span3 { grid-column: span 3; }
+  .field label { font-size: 12px; color: #8B91A1; display: flex; justify-content: space-between; }
+  .field label span { font-family: Menlo, monospace; font-size: 11px; color: #5E6475; }
+  .field input, .field select {
+    height: 38px; padding: 0 11px; border-radius: 9px; border: 1px solid #262A36;
+    background: #181B24; color: #F3F4F6; font-size: 13.5px; outline: none; width: 100%;
+  }
+  .field input:focus, .field select:focus { border-color: #C8FF3D; }
+
+  .pill-row { margin-top: 14px; padding-top: 14px; border-top: 1px solid #1E212B; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 8px;
+    border: 1.5px solid #252936; background: #181A22; color: #C5CBD9; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  .chip.on { border-color: #C8FF3D; background: #1B2019; color: #FFFFFF; }
+  .chip-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* QR & Memo rows */
+  .qr-list, .memo-list { display: flex; flex-direction: column; gap: 8px; }
+  .qr-row {
+    padding: 8px 12px; border-radius: 10px; border: 1.5px solid #252936; background: #181A22;
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .qr-row.on { border-color: #C8FF3D; background: #1B2019; }
+  .qr-badge { width: 28px; height: 28px; border-radius: 7px; color: #FFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .qr-row select { height: 30px; padding: 0 6px; border-radius: 7px; border: 1px solid #2A2F3D; background: #14161D; font-size: 12.5px; width: 92px; flex-shrink: 0; }
+  .qr-row input { height: 30px; padding: 0 8px; border-radius: 7px; border: 1px solid #2A2F3D; background: #14161D; font-size: 12.5px; flex: 1; min-width: 0; }
+  .qr-del, .memo-del { border: 0; background: transparent; color: #6E7485; font-size: 15px; cursor: pointer; padding: 2px 6px; }
+  .qr-del:hover, .memo-del:hover { color: #FF5A5A; }
+  .add-dashed {
+    height: 42px; border-radius: 10px; border: 1.5px dashed #323747; background: #171A23;
+    color: #C5CBD9; font-size: 13px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
+  }
+  .add-dashed:hover { border-color: #C8FF3D; color: #FFF; }
+
+  .memo-add-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+  .memo-add-bar input { flex: 1; height: 36px; padding: 0 11px; border-radius: 9px; border: 1px solid #262A36; background: #181B24; font-size: 13px; outline: none; }
+  .memo-add-bar input:focus { border-color: #C8FF3D; }
+  .memo-row {
+    height: 42px; padding: 0 10px; border-radius: 10px; background: #181B24; border: 1px solid #222530;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .memo-row.focus { border-color: #2F3646; }
+  .memo-chk {
+    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #4A5062; background: transparent;
+    color: #0D0E12; font-size: 11px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;
+  }
+  .memo-chk.done { border-color: #C8FF3D; background: #C8FF3D; }
+  .memo-txt { flex: 1; font-size: 13.5px; color: #F3F4F6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .memo-txt.done { color: #636A7B; text-decoration: line-through; }
+  .memo-star { border: 0; background: transparent; color: #565D70; font-size: 15px; cursor: pointer; padding: 0 4px; }
+  .memo-star.on { color: #F04E23; }
+  .memo-star.full { color: #2C3140; cursor: not-allowed; }
+  .memo-mv { border: 0; background: transparent; color: #4B5163; font-size: 12px; cursor: pointer; padding: 0 2px; }
+  .memo-mv:hover { color: #C8FF3D; }
+
+  .toast {
+    position: fixed; right: 24px; bottom: 24px; padding: 10px 16px; border-radius: 10px;
+    background: #1B2019; border: 1px solid #C8FF3D; color: #F3F4F6; font-size: 13px; font-weight: 600;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .toast.show { opacity: 1; }
+  .toast.err { background: #261616; border-color: #FF5A5A; }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
-<header>
-  <h1>赛博<b>工牌</b></h1>
-  <span class="grow"></span>
-  <span class="pill" id="saveState">已保存</span>
-  <span class="pill" id="devState"><i></i><span>检查中</span></span>
-</header>
-<div id="down"><h2>连不上工牌服务</h2><p>请确认 DeepSeek Harness 开着，并且“赛博工牌”插件已启用，然后刷新这个页面。</p></div>
-<main id="app" hidden>
-  <div class="stage">
-    <div class="tabs" role="tablist" aria-label="预览哪一页">
-      <button role="tab" data-tab="id" aria-selected="true">工牌</button>
-      <button role="tab" data-tab="memo" aria-selected="false">便签</button>
-      <button role="tab" data-tab="answer" aria-selected="false">答案之书</button>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-ico" aria-hidden="true"><i></i><i></i></div>
+      <span>赛博<em>工牌</em></span>
     </div>
-    <div class="shell"><div class="screenbox"><div class="screen" id="screen"></div></div>
-      <div class="keys"><span>▲</span><button type="button" id="okKey" title="在答案之书页点一下，看看答案的大字排版">OK</button><span>▼</span></div></div>
-    <p class="note">这里是示意，改完几秒后看工牌屏幕。工牌上 ▲▼ 翻页；按 OK：工牌页换大字，便签页划掉一条，答案之书翻一个答案。一分钟不按键会回到工牌页。</p>
-  </div>
-  <div>
-    <section>
-      <h2>给别人看</h2><p class="lead">工牌第一页：让别人一眼知道你是谁。除了姓名都可以不填。</p>
-      <div class="row">
-        <label class="f">姓名<input type="text" data-k="name" maxlength="9"></label>
-        <label class="f">英文名 / 花名<input type="text" data-k="handle" maxlength="19"></label>
-        <label class="f">部门<input type="text" data-k="dept" maxlength="13"></label>
-        <label class="f">职位<input type="text" data-k="title" maxlength="13"></label>
-        <label class="f">工号<input type="text" data-k="emp_id" maxlength="15"></label>
-        <label class="f">MBTI（也会影响答案之书的口吻）<select data-k="mbti" id="mbti"></select></label>
-        <label class="f wide">签名（一行，11 个字以内能显示完整）<input type="text" data-k="tagline" maxlength="21"></label>
+    <nav class="tabs">
+      <button type="button" class="tab on" data-tab="badge">工牌</button>
+      <button type="button" class="tab" data-tab="sub">名片与便签</button>
+    </nav>
+    <div class="spacer"></div>
+    <div id="pairBar" class="pair-bar">
+      <span id="pairText"></span>
+      <button type="button" id="pairApprove" class="pair-btn">允许配对</button>
+      <button type="button" id="pairDeny" class="pair-deny">忽略</button>
+    </div>
+    <span id="syncState" class="sync-state">已同步</span>
+    <button type="button" id="syncBtn" class="sync-btn">同步到工牌</button>
+  </header>
+
+  <main class="workspace">
+    <!-- Left: pure 1:1 device screen preview -->
+    <aside class="preview-col">
+      <div id="pvSwitch" class="pv-switch hidden">
+        <button type="button" class="on" data-pv="qr">名片码</button>
+        <button type="button" data-pv="memo">便签</button>
       </div>
-    </section>
-    <section>
-      <h2>大字</h2><p class="lead">第一页底部的一行大字，远处也看得清。写状态（开会中）、想聊的（来聊露营）、态度（别催）都行。在工牌上按 OK 换下一条。最多 6 条，每条不超过 4 个字。</p>
-      <div class="statuses" id="statuses"></div>
-    </section>
-    <section>
-      <h2>便签</h2><p class="lead">工牌第二页，给你自己看：工位号、分机、今天要交的东西。最多 4 条，每条 20 个字以内。在工牌上按 OK 会划掉最上面一条没完成的；也可以在 Harness 对话里说“帮我记一下……”。</p>
-      <div class="memos" id="memos"></div>
-    </section>
-    <section>
-      <h2>答案之书</h2><p class="lead">工牌第三页：心里想一个问题，按 OK，翻出一个答案。内置 72 个答案，会按你的 MBTI 调口吻（比如 T 会翻到“算算成本”，F 会翻到“照顾好自己”），相反口吻的不出现；没填 MBTI 就全部随机。</p>
-      <p class="lead" style="margin-bottom:10px">下面可以加你自己的答案，最多 8 条，每条 12 个字以内，会更常被翻到。</p>
-      <div class="answers" id="answers"></div>
-    </section>
-    <section>
-      <h2>皮肤</h2><p class="lead">六套配色，工牌上在设置里也能换（长按 OK）。</p>
-      <div class="skins" id="skins"></div>
-    </section>
-    <section>
-      <h2>像素头像</h2><p class="lead">16 × 16 格。选颜色，在格子上点或拖着画；也可以在 Harness 对话里让 AI 帮你画。</p>
-      <div class="pix">
-        <div class="grid" id="grid" role="img" aria-label="像素头像画布"></div>
-        <div>
-          <div class="swatches" id="swatches"></div>
-          <div class="tools"><small>改这支颜色</small><input type="color" id="recolor" aria-label="修改选中的颜色"></div>
-          <div class="tools"><small>从预设开始（会同时换掉调色板）</small></div>
-          <div class="presets" id="presets"></div>
-          <div class="tools"><button class="btn" id="clear" type="button">清空画布</button></div>
+      <div class="shell">
+        <div class="lanyard" aria-hidden="true"></div>
+        <div class="screen-wrap">
+          <div id="screen" class="screen"></div>
         </div>
       </div>
-    </section>
-    <section>
-      <h2>摸鱼战绩</h2><p class="lead">工牌第四页的摸鱼池：按 OK 下水，▲▼ 摸鱼，OK 喂食，对着麦克风吹气起风，长按 OK 上岸。不联网也能玩，联网后次数记到这里。</p>
-      <div id="pond"></div>
-    </section>
-  </div>
-</main>
+    </aside>
+
+    <!-- Right: Badge Page -->
+    <div id="panelBadge" class="editor-col">
+      <section class="card">
+        <div class="card-head"><h2>风格</h2></div>
+        <div id="styleGrid" class="style-grid"></div>
+        <div id="palRow" class="pal-row"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>形象</h2>
+          <div class="seg">
+            <button type="button" id="avTabPreset" class="on">默认</button>
+            <button type="button" id="avTabUpload">自定义</button>
+          </div>
+        </div>
+        <div id="avPresetBox"></div>
+        <div id="avUploadBox" class="upload-row hidden">
+          <div class="upload-prev"><img id="uploadPrevImg" alt="预览"></div>
+          <div id="photoDrop" class="dropzone">
+            <span id="photoDropText" style="font-size:13.5px;font-weight:600;color:#C5CBD9">拖入图片或点击上传</span>
+            <button type="button" id="pickPhotoBtn" class="btn-primary">选择图片</button>
+            <input id="photoFile" type="file" accept="image/*" class="hidden">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>资料</h2></div>
+        <div class="form-grid">
+          <div class="field">
+            <label>姓名 <span id="cntName"></span></label>
+            <input id="inName" maxlength="12" placeholder="姓名">
+          </div>
+          <div class="field">
+            <label>花名 <span id="cntHandle"></span></label>
+            <input id="inHandle" maxlength="10" placeholder="albis">
+          </div>
+          <div class="field">
+            <label>身份 <span id="cntTitle"></span></label>
+            <input id="inTitle" maxlength="12" placeholder="产品经理">
+          </div>
+          <div class="field">
+            <label>MBTI</label>
+            <select id="inMbti"></select>
+          </div>
+          <div class="field span3">
+            <label>宣言 <span id="cntTagline"></span></label>
+            <input id="inTagline" maxlength="18" placeholder="把一件事做到极致">
+          </div>
+          <div id="fieldEmp" class="field">
+            <label>工号</label>
+            <input id="inEmp" maxlength="6" placeholder="选填">
+          </div>
+          <div id="fieldPassTag" class="field hidden">
+            <label>顶标</label>
+            <input id="inPassTag" maxlength="12" placeholder="CREATOR PASS">
+          </div>
+        </div>
+        <div id="statusMoodRow" class="pill-row"></div>
+      </section>
+    </div>
+
+    <!-- Right: QR & Memo Page -->
+    <div id="panelSub" class="editor-col hidden">
+      <section class="card" style="padding:14px 22px">
+        <div class="card-head" style="margin-bottom:0">
+          <h2>页面样式</h2>
+          <div class="seg">
+            <button type="button" id="sceneWork" class="on-lime">职场简约</button>
+            <button type="button" id="sceneStu">手账潮玩</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>名片码</h2>
+          <div class="seg">
+            <button type="button" id="qrRound" class="on">圆角</button>
+            <button type="button" id="qrSharp">标准</button>
+          </div>
+        </div>
+        <div id="qrList" class="qr-list"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" id="uploadQrBtn" class="add-dashed"><span style="color:#C8FF3D;font-size:16px">+</span> 上传二维码图片</button>
+          <button type="button" id="addQrManual" class="btn-ghost">+ 粘贴链接</button>
+          <input id="qrFile" type="file" accept="image/*" class="hidden">
+        </div>
+      </section>
+
+      <section class="card" style="flex:1;display:flex;flex-direction:column">
+        <div class="card-head">
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <h2>待办便签</h2>
+            <span id="memoMeta" class="card-meta">0/10 · ★ 0/3</span>
+          </div>
+        </div>
+        <div class="memo-add-bar">
+          <input id="memoInput" maxlength="40" placeholder="新增一条待办，回车添加">
+          <button type="button" id="memoAddBtn" class="btn-ghost">+ 添加</button>
+        </div>
+        <div id="memoList" class="memo-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
 <script>
-const $ = (s, r = document) => r.querySelector(s)
-const el = (tag, attrs = {}, ...kids) => {
-  const e = document.createElement(tag)
-  for (const [k, v] of Object.entries(attrs)) {
-    if (k === 'style') e.style.cssText = v
-    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v)
-    else if (v !== false && v !== null && v !== undefined) e.setAttribute(k, v === true ? '' : v)
+// ---- Compact Pure-JS ISO/IEC 18004 QR Encoder (V1..V6, ECC-M, Byte mode; mirrors firmware cb_qrcode.c) ----
+const QR = (() => {
+  const VER = [
+    { data: 16, ec: 10, blk: 1, al: 0 },
+    { data: 28, ec: 16, blk: 1, al: 18 },
+    { data: 44, ec: 26, blk: 1, al: 22 },
+    { data: 64, ec: 18, blk: 2, al: 26 },
+    { data: 86, ec: 24, blk: 2, al: 30 },
+    { data: 108, ec: 16, blk: 4, al: 34 },
+  ]
+  const FMT = [0x5412, 0x5125, 0x5E7C, 0x5B4B, 0x45F9, 0x40CE, 0x4F97, 0x4AA0]
+  const gfMul = (a, b) => {
+    let r = 0
+    for (let i = 0; i < 8; i++) {
+      if (b & 1) r ^= a
+      const hi = a & 0x80
+      a = (a << 1) & 0xFF
+      if (hi) a ^= 0x1D
+      b >>= 1
+    }
+    return r
   }
-  for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) e.append(kid)
-  return e
-}
-const MBTI = ['', 'INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP']
+  const rs = (data, ecLen) => {
+    const gen = new Uint8Array(ecLen)
+    gen[ecLen - 1] = 1
+    let root = 1
+    for (let i = 0; i < ecLen; i++) {
+      for (let j = 0; j < ecLen; j++) gen[j] = gfMul(gen[j], root) ^ (j + 1 < ecLen ? gen[j + 1] : 0)
+      root = gfMul(root, 2)
+    }
+    const ec = new Uint8Array(ecLen)
+    for (let i = 0; i < data.length; i++) {
+      const f = data[i] ^ ec[0]
+      ec.copyWithin(0, 1)
+      ec[ecLen - 1] = 0
+      for (let j = 0; j < ecLen; j++) ec[j] ^= gfMul(gen[j], f)
+    }
+    return ec
+  }
+  function encode(text) {
+    const bytes = new TextEncoder().encode(text)
+    if (!bytes.length || bytes.length > 106) return null
+    let ver = 0
+    for (let v = 1; v <= 6; v++) { if (bytes.length <= VER[v - 1].data - 2) { ver = v; break } }
+    if (!ver) return null
+    const vi = VER[ver - 1]
+    const sz = 17 + 4 * ver
+    const bits = []
+    const push = (val, n) => { for (let i = n - 1; i >= 0; i--) bits.push((val >> i) & 1) }
+    push(0x4, 4); push(bytes.length, 8)
+    for (const b of bytes) push(b, 8)
+    const cap = vi.data * 8
+    for (let i = 0; i < Math.min(4, cap - bits.length); i++) bits.push(0)
+    while (bits.length & 7) bits.push(0)
+    const data = new Uint8Array(vi.data)
+    for (let i = 0; i < bits.length; i++) if (bits[i]) data[i >> 3] |= 1 << (7 - (i & 7))
+    const pads = [0xEC, 0x11]
+    for (let i = bits.length >> 3, p = 0; i < vi.data; i++, p++) data[i] = pads[p & 1]
+    const bd = vi.data / vi.blk
+    const ecs = []
+    for (let b = 0; b < vi.blk; b++) ecs.push(rs(data.subarray(b * bd, (b + 1) * bd), vi.ec))
+    const cw = []
+    for (let i = 0; i < bd; i++) for (let b = 0; b < vi.blk; b++) cw.push(data[b * bd + i])
+    for (let i = 0; i < vi.ec; i++) for (let b = 0; b < vi.blk; b++) cw.push(ecs[b][i])
+    const mod = new Uint8Array(sz * sz)
+    const isFn = new Uint8Array(sz * sz)
+    const setFn = (x, y, d) => { if (x >= 0 && y >= 0 && x < sz && y < sz) { mod[y * sz + x] = d ? 1 : 0; isFn[y * sz + x] = 1 } }
+    for (let i = 0; i < sz; i++) { setFn(6, i, (i & 1) === 0); setFn(i, 6, (i & 1) === 0) }
+    const finder = (cx, cy) => {
+      for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+        const d = Math.max(Math.abs(dx), Math.abs(dy))
+        setFn(cx + dx, cy + dy, d !== 2 && d !== 4)
+      }
+    }
+    finder(3, 3); finder(sz - 4, 3); finder(3, sz - 4)
+    if (vi.al) {
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setFn(vi.al + dx, vi.al + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1)
+    }
+    const drawFmt = (arr, m) => {
+      const b = FMT[m]
+      const put = (x, y, v) => { arr[y * sz + x] = v ? 1 : 0; isFn[y * sz + x] = 1 }
+      for (let i = 0; i <= 5; i++) put(8, i, (b >> i) & 1)
+      put(8, 7, (b >> 6) & 1); put(8, 8, (b >> 7) & 1); put(7, 8, (b >> 8) & 1)
+      for (let i = 9; i < 15; i++) put(14 - i, 8, (b >> i) & 1)
+      for (let i = 0; i < 8; i++) put(sz - 1 - i, 8, (b >> i) & 1)
+      for (let i = 8; i < 15; i++) put(8, sz - 15 + i, (b >> i) & 1)
+      put(8, sz - 8, 1)
+    }
+    drawFmt(mod, 0)
+    let bi = 0
+    for (let r = sz - 1; r >= 1; r -= 2) {
+      if (r === 6) r = 5
+      for (let v = 0; v < sz; v++) {
+        const y = (((r + 1) & 2) === 0) ? (sz - 1 - v) : v
+        for (let j = 0; j < 2; j++) {
+          const x = r - j
+          if (!isFn[y * sz + x]) {
+            mod[y * sz + x] = (bi < cw.length * 8) ? ((cw[bi >> 3] >> (7 - (bi & 7))) & 1) : 0
+            bi++
+          }
+        }
+      }
+    }
+    const mfn = [
+      (x, y) => ((x + y) & 1) === 0, (x, y) => (y & 1) === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+      (x, y) => (((y >> 1) + Math.floor(x / 3)) & 1) === 0, (x, y) => (x * y) % 2 + (x * y) % 3 === 0,
+      (x, y) => (((x * y) % 2 + (x * y) % 3) & 1) === 0, (x, y) => (((x + y) % 2 + (x * y) % 3) & 1) === 0,
+    ]
+    let best = null, bestSc = 1e9
+    for (let m = 0; m < 8; m++) {
+      const c = mod.slice()
+      for (let y = 0; y < sz; y++) for (let x = 0; x < sz; x++) if (!isFn[y * sz + x] && mfn[m](x, y)) c[y * sz + x] ^= 1
+      drawFmt(c, m)
+      let sc = 0, dark = 0
+      for (let y = 0; y < sz; y++) {
+        let run = 1
+        for (let x = 0; x < sz; x++) {
+          if (c[y * sz + x]) dark++
+          if (x > 0) { if (c[y * sz + x] === c[y * sz + x - 1]) run++; else { if (run >= 5) sc += run - 2; run = 1 } }
+        }
+        if (run >= 5) sc += run - 2
+      }
+      sc += Math.floor(Math.abs((dark * 100) / (sz * sz) - 50) / 5) * 10
+      if (sc < bestSc) { bestSc = sc; best = c }
+    }
+    return { size: sz, modules: best }
+  }
+  return { encode }
+})()
 
-let meta = null, S = null            // S：服务返回的 { version, profile, device }
-let P = null                         // 正在编辑的资料
-let tab = 'id', color = 1, dirty = false, saving = false, timer = 0, painting = false
-let answerShown = ''              // 预览里点设备的 OK 键：翻一条自己加的答案看看排版
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]))
+const charCols = (ch) => {
+  const cp = ch.codePointAt(0) || 0
+  return (cp >= 0x1100 && (cp <= 0x115F || (cp >= 0x2E80 && cp <= 0xA4CF) || (cp >= 0xAC00 && cp <= 0xD7A3) ||
+    (cp >= 0xF900 && cp <= 0xFAFF) || (cp >= 0xFE10 && cp <= 0xFE6F) || (cp >= 0xFF00 && cp <= 0xFF60) ||
+    (cp >= 0xFFE0 && cp <= 0xFFE6) || cp >= 0x1F300)) ? 2 : 1
+}
+const cols = (s) => { let n = 0; for (const c of String(s || '')) n += charCols(c); return n }
 
-async function api(path, opts) {
-  const r = await fetch(path, opts)
-  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || String(r.status))
-  return r.json()
-}
+// 6 built-in 24x24 pixel sprites (exact SVG parity with P5-4 & P7-1)
+const PIXEL_SVG = [
+  '<rect x="6" y="21" width="12" height="2" fill="#182028" opacity="0.35"/><rect x="7" y="2" width="10" height="2" fill="#182028"/><rect x="5" y="4" width="14" height="4" fill="#182028"/><rect x="7" y="3" width="10" height="4" fill="#E52521"/><rect x="6" y="5" width="12" height="2" fill="#FF5247"/><rect x="5" y="8" width="14" height="7" fill="#182028"/><rect x="6" y="8" width="12" height="6" fill="#FFD6B0"/><rect x="7" y="10" width="4" height="3" fill="#182028"/><rect x="13" y="10" width="4" height="3" fill="#182028"/><rect x="11" y="11" width="2" height="1" fill="#182028"/><rect x="8" y="11" width="2" height="1" fill="#FFFFFF"/><rect x="14" y="11" width="2" height="1" fill="#FFFFFF"/><rect x="6" y="13" width="2" height="1" fill="#FF7B89"/><rect x="16" y="13" width="2" height="1" fill="#FF7B89"/><rect x="5" y="15" width="14" height="6" fill="#182028"/><rect x="6" y="15" width="12" height="5" fill="#2050E8"/><rect x="10" y="16" width="4" height="4" fill="#FFFFFF"/><rect x="11" y="17" width="2" height="2" fill="#E52521"/><rect x="18" y="15" width="4" height="5" fill="#182028"/><rect x="19" y="16" width="2" height="3" fill="#FFFFFF"/><rect x="19" y="17" width="2" height="1" fill="#FF9900"/>',
+  '<rect x="6" y="21" width="12" height="2" fill="#182028" opacity="0.35"/><rect x="5" y="3" width="4" height="4" fill="#182028"/><rect x="15" y="3" width="4" height="4" fill="#182028"/><rect x="6" y="4" width="2" height="3" fill="#E68A2E"/><rect x="16" y="4" width="2" height="3" fill="#E68A2E"/><rect x="4" y="6" width="16" height="9" fill="#182028"/><rect x="5" y="7" width="14" height="7" fill="#E68A2E"/><rect x="5" y="11" width="14" height="3" fill="#FFF3D6"/><rect x="8" y="10" width="8" height="4" fill="#FFF3D6"/><rect x="7" y="8" width="2" height="1" fill="#FFF3D6"/><rect x="15" y="8" width="2" height="1" fill="#FFF3D6"/><rect x="7" y="10" width="2" height="2" fill="#182028"/><rect x="15" y="10" width="2" height="2" fill="#182028"/><rect x="11" y="11" width="2" height="1" fill="#182028"/><rect x="6" y="12" width="2" height="1" fill="#FF7B89"/><rect x="16" y="12" width="2" height="1" fill="#FF7B89"/><rect x="5" y="15" width="14" height="6" fill="#182028"/><rect x="6" y="15" width="12" height="5" fill="#2050E8"/><rect x="9" y="15" width="1" height="3" fill="#E52521"/><rect x="14" y="15" width="1" height="3" fill="#E52521"/><rect x="10" y="17" width="4" height="3" fill="#FFFFFF"/>',
+  '<rect x="6" y="21" width="12" height="2" fill="#182028" opacity="0.35"/><rect x="5" y="3" width="4" height="4" fill="#182028"/><rect x="15" y="3" width="4" height="4" fill="#182028"/><rect x="6" y="4" width="2" height="2" fill="#FF7B89"/><rect x="16" y="4" width="2" height="2" fill="#FF7B89"/><rect x="4" y="6" width="16" height="9" fill="#182028"/><rect x="5" y="7" width="14" height="7" fill="#4B5775"/><rect x="4" y="9" width="16" height="4" fill="#182028"/><rect x="5" y="10" width="14" height="2" fill="#2EEBFF"/><rect x="7" y="10" width="2" height="1" fill="#182028"/><rect x="15" y="10" width="2" height="1" fill="#182028"/><rect x="10" y="13" width="4" height="1" fill="#FFFFFF"/><rect x="5" y="15" width="14" height="6" fill="#182028"/><rect x="6" y="15" width="12" height="5" fill="#323A52"/><rect x="8" y="15" width="8" height="1" fill="#E52521"/><rect x="11" y="16" width="2" height="2" fill="#FFE64D"/>',
+  '<rect x="5" y="21" width="14" height="2" fill="#182028" opacity="0.35"/><rect x="10" y="2" width="2" height="3" fill="#88EEFF"/><rect x="8" y="2" width="2" height="1" fill="#FFFFFF"/><rect x="12" y="2" width="2" height="1" fill="#FFFFFF"/><rect x="6" y="5" width="10" height="2" fill="#182028"/><rect x="4" y="7" width="14" height="10" fill="#182028"/><rect x="5" y="17" width="12" height="4" fill="#182028"/><rect x="18" y="10" width="4" height="6" fill="#182028"/><rect x="19" y="8" width="4" height="4" fill="#182028"/><rect x="18" y="11" width="3" height="4" fill="#2B7BFF"/><rect x="20" y="9" width="2" height="3" fill="#5CA2FF"/><rect x="6" y="6" width="10" height="10" fill="#2B7BFF"/><rect x="5" y="8" width="12" height="8" fill="#2B7BFF"/><rect x="7" y="7" width="7" height="2" fill="#6BB2FF"/><rect x="5" y="15" width="11" height="5" fill="#FFFDF5"/><rect x="7" y="16" width="1" height="3" fill="#B8D4FF"/><rect x="10" y="16" width="1" height="3" fill="#B8D4FF"/><rect x="13" y="16" width="1" height="3" fill="#B8D4FF"/><rect x="6" y="11" width="2" height="2" fill="#182028"/><rect x="6" y="11" width="1" height="1" fill="#FFFFFF"/><rect x="12" y="11" width="2" height="2" fill="#182028"/><rect x="12" y="11" width="1" height="1" fill="#FFFFFF"/><rect x="5" y="13" width="2" height="1" fill="#FF7B89"/><rect x="14" y="13" width="2" height="1" fill="#FF7B89"/><rect x="9" y="13" width="2" height="1" fill="#182028"/>',
+  '<rect x="6" y="21" width="12" height="2" fill="#182028" opacity="0.35"/><rect x="6" y="2" width="12" height="2" fill="#182028"/><rect x="4" y="4" width="16" height="12" fill="#182028"/><rect x="3" y="12" width="18" height="5" fill="#182028"/><rect x="6" y="3" width="12" height="4" fill="#F7EFC6"/><rect x="5" y="5" width="14" height="10" fill="#F7EFC6"/><rect x="4" y="13" width="16" height="3" fill="#E6D69C"/><rect x="8" y="4" width="6" height="1" fill="#FFFFFF"/><rect x="7" y="7" width="10" height="7" fill="#FFE6D4"/><rect x="7" y="7" width="4" height="2" fill="#F7EFC6"/><rect x="14" y="7" width="3" height="1" fill="#F7EFC6"/><rect x="8" y="10" width="2" height="2" fill="#2B5B84"/><rect x="8" y="11" width="2" height="1" fill="#6EC6FF"/><rect x="14" y="10" width="2" height="2" fill="#2B5B84"/><rect x="14" y="11" width="2" height="1" fill="#6EC6FF"/><rect x="7" y="12" width="2" height="1" fill="#FF8DA1"/><rect x="15" y="12" width="2" height="1" fill="#FF8DA1"/><rect x="11" y="12" width="2" height="1" fill="#D97A7A"/><rect x="5" y="15" width="14" height="6" fill="#182028"/><rect x="6" y="15" width="12" height="5" fill="#252B33"/><rect x="9" y="15" width="6" height="4" fill="#FFFFFF"/><rect x="11" y="15" width="2" height="5" fill="#116B3E"/><rect x="11" y="17" width="2" height="1" fill="#D8DEE9"/><rect x="7" y="17" width="2" height="2" fill="#116B3E"/>',
+  '<rect x="6" y="21" width="12" height="2" fill="#182028" opacity="0.35"/><rect x="1" y="5" width="4" height="14" fill="#182028"/><rect x="19" y="5" width="4" height="14" fill="#182028"/><rect x="2" y="6" width="2" height="12" fill="#2EEBFF"/><rect x="20" y="6" width="2" height="12" fill="#2EEBFF"/><rect x="4" y="5" width="2" height="2" fill="#FF3D7F"/><rect x="18" y="5" width="2" height="2" fill="#FF3D7F"/><rect x="6" y="3" width="12" height="12" fill="#182028"/><rect x="7" y="4" width="10" height="5" fill="#2EEBFF"/><rect x="8" y="5" width="6" height="1" fill="#B8FBFF"/><rect x="7" y="8" width="10" height="6" fill="#FFE6D4"/><rect x="8" y="10" width="2" height="2" fill="#182028"/><rect x="8" y="11" width="1" height="1" fill="#2EEBFF"/><rect x="14" y="10" width="2" height="2" fill="#182028"/><rect x="14" y="11" width="1" height="1" fill="#2EEBFF"/><rect x="7" y="12" width="1" height="1" fill="#FF7B89"/><rect x="16" y="12" width="1" height="1" fill="#FF7B89"/><rect x="6" y="15" width="12" height="6" fill="#182028"/><rect x="7" y="15" width="10" height="5" fill="#2D3342"/><rect x="10" y="15" width="4" height="4" fill="#FFFFFF"/><rect x="11" y="16" width="2" height="4" fill="#2EEBFF"/>',
+]
 
-// ---- 保存：改动后 0.5 秒自动保存 ----
-function changed() {
-  dirty = true
-  $('#saveState').textContent = '保存中…'
-  renderScreen()
-  clearTimeout(timer)
-  timer = setTimeout(save, 500)
-}
-async function save() {
-  if (saving) { timer = setTimeout(save, 300); return }
-  saving = true
-  const sent = JSON.stringify(P)
-  try {
-    S = await api('/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: sent })
-    if (JSON.stringify(P) === sent) { dirty = false; adopt(false) }
-    $('#saveState').textContent = S.device.online ? '已保存，工牌同步中' : '已保存，工牌联网后同步'
-  } catch (e) {
-    $('#saveState').textContent = '没保存上：' + e.message
-  }
-  saving = false
-  renderDerived()
-}
-/** 用服务整理过的资料替换本地的；fill = 要不要重填输入框（正在输入时不重填，免得光标跳） */
-function adopt(fill) {
-  P = structuredClone(S.profile)
-  if (fill) fillForm()
-  renderScreen()
+const MOOD_ICONS = [
+  `<circle cx="7" cy="7" r="3.5" fill="#FFE64D"/><path d="M7 1V2.5M7 11.5V13M1 7H2.5M11.5 7H13" stroke="#FFE64D" stroke-width="1.6" stroke-linecap="round"/>`,
+  `<rect x="2" y="5" width="7.5" height="6.5" rx="1.5" fill="#FFE64D"/><path d="M9.5 6.5H11C11.8 6.5 12.3 7 12.3 7.8C12.3 8.6 11.8 9.2 11 9.2H9.5" fill="none" stroke="#FFE64D" stroke-width="1.5"/>`,
+  `<polygon points="8,1 3,8 6.8,8 5.8,13 11,6 7.2,6" fill="#FFE64D"/>`,
+  `<path d="M2.5 8.5V7A4.5 4.5 0 0 1 11.5 7V8.5" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/><rect x="1.5" y="7.5" width="2.8" height="4.5" rx="1" fill="#FFE64D"/><rect x="9.7" y="7.5" width="2.8" height="4.5" rx="1" fill="#FFE64D"/>`,
+  `<polygon points="7,1 8.8,5.2 13.2,5.6 9.8,8.5 10.9,13 7,10.6 3.1,13 4.2,8.5 0.8,5.6 5.2,5.2" fill="#FFE64D"/>`,
+  `<path d="M3.5 10.5H10.5A2.5 2.5 0 0 0 10.7 5.5A3.4 3.4 0 0 0 4.3 4.6A2.6 2.6 0 0 0 3.5 10.5Z" fill="#FFFFFF"/>`,
+]
+
+const SUB_THEMES = {
+  mint:     { wk:{ headBg:'#E3ECE8', headBd:'#B9CEC5', ink:'#14241E', muted:'#48665B', paper:'#F4F9F6', rule:'#D8E8E1', active:'#DFF5EC', spot:'#0F9F6E', barOff:'#C5D9D1', keyBg:'#D8EEE4', bracket:'#A9C2B8' }, stu:{ qrBg:'#3CD69A', qrInk:'#0E1C16', qrSub:'#14402E', badgeBg:'#FFE247', badgeInk:'#141414', dotOn:'#141414', dotOff:'#FFFFFF', paper:'#E0FFF4', grid:'rgba(11,138,92,0.16)', tape:'#3CD69A', note:'#FFE247', pillBg:'#0B8A5C', hl:'#FFE247', spot:'#0B8A5C', chk:'#7DF5C6', muted:'#1F4D3D' } },
+  lavender: { wk:{ headBg:'#EAE6F5', headBd:'#C7BFE3', ink:'#1D182E', muted:'#594F7A', paper:'#F7F5FC', rule:'#E2DCF2', active:'#ECE6FF', spot:'#6D4EE0', barOff:'#D2CBE6', keyBg:'#E4DCFA', bracket:'#BCB2D9' }, stu:{ qrBg:'#6C80F2', qrInk:'#FFFFFF', qrSub:'#E2E7FF', badgeBg:'#FFE44D', badgeInk:'#141414', dotOn:'#FFE44D', dotOff:'#FFFFFF', paper:'#F4F6FF', grid:'rgba(108,128,242,0.18)', tape:'#6C80F2', note:'#FFE44D', pillBg:'#6C80F2', hl:'#FFE44D', spot:'#5B6EE8', chk:'#FFFFFF', muted:'#4E5680' } },
+  cream:    { wk:{ headBg:'#E6EFF7', headBd:'#BFD1E3', ink:'#16202E', muted:'#4E627A', paper:'#F2F9FF', rule:'#D9E6F2', active:'#FFF5C4', spot:'#D99B00', barOff:'#C8D8E8', keyBg:'#FFE875', bracket:'#AFC3D6' }, stu:{ qrBg:'#FFF7DF', qrInk:'#141414', qrSub:'#544B38', badgeBg:'#E8432A', badgeInk:'#FFFFFF', dotOn:'#E8432A', dotOff:'#FFD84D', paper:'#FFF7DF', grid:'rgba(180,156,105,0.22)', tape:'#FFD84D', note:'#FFD84D', pillBg:'#E8432A', hl:'#FFE36E', spot:'#E8432A', chk:'#FFE36E', muted:'#544B38' } },
+  terra:    { wk:{ headBg:'#EAE3D6', headBd:'#CFC5B4', ink:'#241C16', muted:'#69594C', paper:'#F7F3EA', rule:'#E5DDD0', active:'#F6E4D8', spot:'#C85A28', barOff:'#D6CCBC', keyBg:'#F0D8C8', bracket:'#BFB29E' }, stu:{ qrBg:'#FFE866', qrInk:'#141414', qrSub:'#4D3D08', badgeBg:'#D92B14', badgeInk:'#FFFFFF', dotOn:'#D92B14', dotOff:'#FFFFFF', paper:'#FFF2B2', grid:'rgba(180,130,30,0.2)', tape:'#FF7D5C', note:'#FF7D5C', pillBg:'#D92B14', hl:'#FFE24D', spot:'#D92B14', chk:'#FFE24D', muted:'#5C480A' } },
+  sky:      { wk:{ headBg:'#E3F2FF', headBd:'#B5D7F7', ink:'#162436', muted:'#476A8F', paper:'#F6FBFF', rule:'#DAE9F7', active:'#FFF2CC', spot:'#E53935', barOff:'#C4DEF7', keyBg:'#FFE285', bracket:'#A4C8EB' }, stu:{ qrBg:'#7EC8FF', qrInk:'#0B1726', qrSub:'#1B3A5E', badgeBg:'#FFE44D', badgeInk:'#0B1726', dotOn:'#0B1726', dotOff:'#FFFFFF', paper:'#EDF8FF', grid:'rgba(56,152,236,0.18)', tape:'#7EC8FF', note:'#FFE44D', pillBg:'#0B1726', hl:'#BAE3FF', spot:'#0284C7', chk:'#7EC8FF', muted:'#1B3A5E' } },
+  amber:    { wk:{ headBg:'#F7EFD9', headBd:'#D9C89A', ink:'#241B05', muted:'#6B5212', paper:'#FCF8ED', rule:'#EDE2C4', active:'#FFEBB3', spot:'#D97706', barOff:'#DFCFA4', keyBg:'#FFE28A', bracket:'#D1BC86' }, stu:{ qrBg:'#FFB81C', qrInk:'#14120C', qrSub:'#4A3604', badgeBg:'#14120C', badgeInk:'#FFFFFF', dotOn:'#14120C', dotOff:'#FFFFFF', paper:'#FFF7E0', grid:'rgba(196,134,12,0.18)', tape:'#FFB81C', note:'#FFB81C', pillBg:'#14120C', hl:'#FFD359', spot:'#D97706', chk:'#FFB81C', muted:'#594208' } },
+  crt:      { wk:{ headBg:'#E2F5E8', headBd:'#B2DBBF', ink:'#0D2615', muted:'#3A6B49', paper:'#F4FBF6', rule:'#D5ECD9', active:'#DEF7E5', spot:'#15803D', barOff:'#BEE3C9', keyBg:'#D1F2DC', bracket:'#9EC9AC' }, stu:{ qrBg:'#3CD69A', qrInk:'#0E1C16', qrSub:'#14402E', badgeBg:'#FFE247', badgeInk:'#141414', dotOn:'#141414', dotOff:'#FFFFFF', paper:'#E0FFF4', grid:'rgba(11,138,92,0.16)', tape:'#3CD69A', note:'#FFE247', pillBg:'#0B8A5C', hl:'#FFE247', spot:'#0B8A5C', chk:'#7DF5C6', muted:'#1F4D3D' } },
 }
 
-// ---- 表单 ----
-function fillForm() {
-  for (const i of document.querySelectorAll('[data-k]')) i.value = P[i.dataset.k] ?? ''
-  renderSkins(); renderStatuses(); renderMemos(); renderAnswers(); renderGrid(); renderSwatches()
-}
-function renderMemos() {
-  const box = $('#memos'); box.replaceChildren()
-  const read = () => {
-    P.memos = [...box.children].map((r) => ({ text: r.querySelector('input[type=text]').value.trim(), done: r.querySelector('input[type=checkbox]').checked })).filter((m) => m.text)
-    changed()
-  }
-  for (let i = 0; i < 4; i++) {
-    const m = P.memos[i] ?? { text: '', done: false }
-    box.append(el('div', {},
-      el('input', { type: 'checkbox', checked: m.done, 'aria-label': `便签 ${i + 1} 已完成`, onchange: read }),
-      el('input', { type: 'text', value: m.text, maxlength: 20, placeholder: i === 0 ? '比如：周五 18 点前交周报' : '', 'aria-label': `便签 ${i + 1}`, oninput: read })))
-  }
-}
-function renderAnswers() {
-  const box = $('#answers'); box.replaceChildren()
-  const read = () => { P.answers = [...box.querySelectorAll('input')].map((i) => i.value.trim()).filter(Boolean); changed() }
-  for (let i = 0; i < 8; i++) {
-    box.append(el('input', { type: 'text', value: P.answers[i] ?? '', maxlength: 12, placeholder: i === 0 ? '比如：先问问老板' : '', 'aria-label': `自己的答案 ${i + 1}`, oninput: read }))
-  }
-}
-function renderSkins() {
-  $('#skins').replaceChildren(...meta.themes.map((t, i) => el('button', { class: 'skin', type: 'button', 'aria-pressed': String(P.theme === i), 'aria-label': `皮肤 ${t.name}`,
-    onclick: () => { P.theme = i; renderSkins(); changed() } },
-    el('div', { style: `background:${t.bg};color:${t.ink}` }, el('b', {}, t.name), el('i', { style: `background:${t.accent}` })))))
-}
-function renderStatuses() {
-  const box = $('#statuses'); box.replaceChildren()
-  const read = () => {
-    const rows = [...box.querySelectorAll('input')].map((i) => i.value.trim())
-    const current = rows[P.status] || ''
-    P.statuses = rows.filter(Boolean)
-    if (!P.statuses.length) P.statuses = ['在线']
-    P.status = Math.max(0, P.statuses.indexOf(current))
-    changed()
-  }
-  for (let i = 0; i < 6; i++) {
-    const text = P.statuses[i] ?? ''
-    box.append(el('div', {}, el('i', { style: `background:${meta.statusColors[i]}` }),
-      el('input', { type: 'text', value: text, maxlength: 4, placeholder: '空着就不显示', 'aria-label': `大字 ${i + 1}`, oninput: read }),
-      el('button', { class: 'btn' + (P.status === i && text ? ' on' : ''), type: 'button', disabled: !text,
-        onclick: () => { P.status = i; renderStatuses(); changed() } }, P.status === i && text ? '正在显示' : '显示这条')))
-  }
-}
-// ---- 像素头像 ----
-const px = (i) => parseInt(P.avatar[i], 16)
-function setPx(i, v) {
-  if (px(i) === v) return
-  P.avatar = P.avatar.slice(0, i) + v.toString(16) + P.avatar.slice(i + 1)
-  $('#grid').children[i].style.background = v ? P.palette[v] : 'transparent'
-  changed()
-}
-function renderGrid() {
-  const g = $('#grid')
-  if (g.children.length !== 256) g.replaceChildren(...Array.from({ length: 256 }, (_, i) => el('i', { 'data-i': i })))
-  for (let i = 0; i < 256; i++) g.children[i].style.background = px(i) ? P.palette[px(i)] : 'transparent'
-}
-function renderSwatches() {
-  const box = $('#swatches')
-  box.replaceChildren(el('button', { class: 'sw erase', type: 'button', 'aria-pressed': String(color === 0), 'aria-label': '橡皮擦', title: '橡皮擦', onclick: () => { color = 0; renderSwatches() } }),
-    ...P.palette.slice(1).map((c, i) => el('button', { class: 'sw', type: 'button', style: `background:${c}`, 'aria-pressed': String(color === i + 1), 'aria-label': `颜色 ${i + 1}`,
-      onclick: () => { color = i + 1; renderSwatches() } })))
-  $('#recolor').value = color ? P.palette[color] : '#000000'
-  $('#recolor').disabled = color === 0
-}
-function paint(e) {
-  const t = document.elementFromPoint(e.clientX, e.clientY)
-  if (t && t.dataset.i !== undefined && t.parentElement === $('#grid')) setPx(Number(t.dataset.i), color)
+function deriveSubTheme(style, pal) {
+  if (style === 0) return [SUB_THEMES.mint, SUB_THEMES.lavender, SUB_THEMES.cream, SUB_THEMES.terra][pal] || SUB_THEMES.mint
+  if (style === 1) return [SUB_THEMES.cream, SUB_THEMES.terra, SUB_THEMES.mint][pal] || SUB_THEMES.cream
+  if (style === 2) return [SUB_THEMES.lavender, SUB_THEMES.mint, SUB_THEMES.amber, SUB_THEMES.sky][pal] || SUB_THEMES.lavender
+  if (style === 3) return SUB_THEMES.sky
+  return pal === 1 ? SUB_THEMES.amber : SUB_THEMES.crt
 }
 
-// ---- 屏幕预览（和设备上的布局坐标一致）----
-function avatarCanvas(size) {
-  const c = el('canvas', { width: 16, height: 16, style: `width:${size}px;height:${size}px;image-rendering:pixelated` })
-  const g = c.getContext('2d')
-  for (let i = 0; i < 256; i++) { const v = px(i); if (v) { g.fillStyle = P.palette[v]; g.fillRect(i % 16, i >> 4, 1, 1) } }
-  return c
+const state = {
+  meta: null,
+  profile: null,
+  hasPhoto: false,
+  photoNonce: 0,
+  pairing: [],
+  tab: 'badge',    // 'badge' | 'sub'
+  pvTab: 'qr',     // 'qr' | 'memo'
+  avTab: 'preset', // 'preset' | 'upload'
+  dirty: false,
 }
-const T = () => meta.themes[P.theme]
-function chrome() {
-  const d = S.device
-  return [d.online ? el('i', { style: 'left:188px;top:17px;width:7px;height:7px;border-radius:4px;background:#35D07F' }) : null,
-    el('i', { style: 'left:200px;top:14px;width:21px;height:12px;border-radius:3px;border:2px solid var(--t-ink)' }),
-    el('i', { style: `left:203px;top:17px;width:${1 + Math.max(0, d.battery < 0 ? 80 : d.battery) * 15 / 100}px;height:6px;border-radius:1px;background:var(--t-ink)` }),
-    el('i', { style: 'left:221px;top:18px;width:2px;height:4px;background:var(--t-ink)' })]
+
+const $ = (id) => document.getElementById(id)
+let toastTimer = null
+function showToast(msg, err = false) {
+  const el = $('toast')
+  el.textContent = msg
+  el.className = 'toast show' + (err ? ' err' : '')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200)
 }
-const txt = (x, y, s, css = '') => el('span', { style: `left:${x}px;top:${y}px;${css}` }, s)
-function nameCols(name) {              // 和固件一致：1–4 个汉字按“姓一侧、名一侧”分列，其它名字横排一行
-  const cs = [...name]
-  if (cs.length < 1 || cs.length > 4 || cs.some((c) => c.charCodeAt(0) < 128)) return null
-  if (cs.length <= 2) return [cs]
-  return cs.length === 3 ? [[cs[0]], [cs[1], cs[2]]] : [cs.slice(0, 2), cs.slice(2)]
+
+function setDirty(v) {
+  state.dirty = v
+  const el = $('syncState')
+  el.textContent = v ? '有未同步修改' : '已同步'
+  el.className = 'sync-state' + (v ? ' dirty' : '')
 }
-function screenId() {
-  // 上半屏一整块主题色（像素锯齿边），头像站在色块上，名字带双色硬投影；下面职位、签名、大字
-  const t = T(), cols = nameCols(P.name), big = cols && cols.length === 1, as = big ? 144 : 112
-  const out = [el('i', { style: 'left:0;top:0;width:240px;height:192px;background:var(--t-accent)' })]
-  for (let i = 1; i < 15; i += 2) out.push(el('i', { style: `left:${i * 16}px;top:184px;width:16px;height:8px;background:var(--t-bg)` }))
-  out.push(el('div', { style: `left:${big ? 82 : 114}px;top:${192 - as}px` }, avatarCanvas(as)))
-  const star = (x, y, u) => out.push(el('i', { style: `left:${x + u}px;top:${y}px;width:${u}px;height:${u * 3}px;background:#fff` }), el('i', { style: `left:${x}px;top:${y + u}px;width:${u * 3}px;height:${u}px;background:#fff` }))
-  star(big ? 190 : 198, big ? 36 : 44, 4); star(big ? 66 : 106, big ? 58 : 106, 3)
-  if (P.emp_id) out.push(txt(18, 12, 'ID:' + P.emp_id, `color:${t.accentInk};opacity:.6;font-size:12px;letter-spacing:1px`))
-  const shadow = (x, y, s, css) => out.push(txt(x + 3, y + 3, s, css + ';color:var(--t-second)'), txt(x, y, s, css + `;color:${t.accentInk}`))
-  if (!cols) shadow(18, 30, P.name, 'width:200px;overflow:hidden;text-overflow:ellipsis;font:40px/48px var(--disp)')
-  else cols.forEach((c, i) => shadow(16 + i * 44, 32 + (cols.length === 2 && c.length === 1 ? 22 : 0), c.join('\n'), 'width:40px;text-align:center;white-space:pre;font:40px/44px var(--disp)'))
-  let y = cols ? 124 : 82
-  if (P.handle) { out.push(txt(18, y - 2, '@' + P.handle, `width:${big ? 150 : 104}px;color:${t.accentInk};font:24px/30px var(--disp)`).also('cut')); y += 29 }
-  if (P.mbti) out.push(txt(18, y, P.mbti, `padding:0 7px;border-radius:3px;background:${t.accentInk};color:var(--t-accent);font:24px/28px var(--disp)`))
-  y = 197
-  const role = [P.title, P.dept].filter(Boolean).join(' · ')
-  if (role) { out.push(txt(18, y - 1, role, 'width:204px;color:var(--t-soft);font-size:17px').also('cut')); y += 23 }
-  if (P.tagline) { out.push(txt(18, y - 1, P.tagline, `width:204px;font-size:17px;color:${t.ink}`).also('cut')); y += 23 }
-  const bh = Math.min(72, 306 - (y + 6))
-  out.push(el('div', { style: `left:18px;top:${306 - bh}px;width:204px;height:${bh}px;border-radius:4px;background:${meta.statusColors[P.status]};display:flex;align-items:center;justify-content:center;overflow:hidden` },
-    el('span', { style: 'position:static;color:#0B0C10;font:40px/48px var(--disp)' }, P.statuses[P.status] || '')))
-  return out
+
+function avatarSrc() {
+  const p = state.profile
+  if (p.avatar_mode === 2 && state.hasPhoto) return `/api/photo.png?v=${p.photo_ver}_${state.photoNonce}`
+  const av = state.meta.builtinAvatars[p.avatar_preset] || state.meta.builtinAvatars[0]
+  return av.src
 }
-function screenMemo() {
-  const left = P.memos.filter((m) => !m.done).length, next = P.memos.findIndex((m) => !m.done)
-  if (!P.memos.length) return [txt(18, 22, '便签', 'font:40px/48px var(--disp)'),
-    el('p', { style: 'left:18px;top:94px;width:204px;white-space:normal;color:var(--t-soft);font-size:17px;line-height:25px' }, '还没有便签，在电脑上写，或者让 AI 帮你记一条')]
-  return [txt(18, 22, '便签', 'font:40px/48px var(--disp)'),
-    txt(0, 43, left ? `还剩 ${left} 条` : '都搞定了', `left:auto;right:18px;font-size:17px;color:${left ? 'var(--t-soft)' : 'var(--t-accent)'}`),
-    ...P.memos.map((m, i) => el('div', { style: `left:18px;top:${82 + i * 57}px;width:204px;height:52px;border-radius:12px;background:var(--t-card);box-sizing:border-box;border:2px solid ${i === next ? 'var(--t-accent)' : 'transparent'}` },
-      el('i', { style: `left:10px;top:15px;width:18px;height:18px;box-sizing:border-box;border-radius:5px;border:2px solid ${m.done ? 'var(--t-accent)' : 'var(--t-soft)'};background:${m.done ? 'var(--t-accent)' : 'transparent'}` }),
-      el('p', { style: `left:38px;top:0;width:154px;height:48px;display:flex;align-items:center;white-space:normal;overflow:hidden;font-size:17px;line-height:23px;color:${m.done ? 'var(--t-soft)' : 'var(--t-ink)'};text-decoration:${m.done ? 'line-through' : 'none'}` }, m.text)))]
+
+function statusKind() {
+  const s = state.profile.statuses[state.profile.status] || ''
+  if (s.includes('下班') || s.includes('休')) return 5
+  if (s.includes('专') || s.includes('勿') || s.includes('课')) return 4
+  if (s.includes('会')) return 3
+  if (s.includes('摸')) return 2
+  if (s.includes('聊') || s.includes('答')) return 1
+  if (s.includes('在')) return 0
+  return state.profile.status % 6
 }
-function screenAnswer() {
-  const t = T()
-  if (!answerShown) return [
-    el('i', { style: 'left:57px;top:51px;width:140px;height:150px;border-radius:6px;background:var(--t-accent)' }),
-    el('div', { style: 'left:50px;top:44px;width:140px;height:150px;box-sizing:border-box;border-radius:6px;background:var(--t-card);border:2px solid var(--t-ink)' },
-      el('i', { style: 'left:12px;top:0;width:2px;height:146px;background:var(--t-ink)' }),
-      el('span', { style: 'left:8px;top:28px;width:128px;text-align:center;color:var(--t-accent);font:56px/64px var(--disp)' }, '?'),
-      el('span', { style: 'left:8px;top:116px;width:128px;text-align:center;color:var(--t-soft);font-size:12px;letter-spacing:1px' }, P.mbti ? `FOR ${P.mbti}` : 'FOR YOU')),
-    el('span', { style: 'left:0;top:202px;width:240px;text-align:center;font:40px/48px var(--disp)' }, '答案之书'),
-    el('span', { style: 'left:0;top:251px;width:240px;text-align:center;color:var(--t-soft);font-size:17px' }, '心里想一个问题'),
-    el('div', { style: 'left:0;top:280px;width:240px;display:flex;justify-content:center' },
-      el('span', { style: `position:static;padding:0 7px;border-radius:7px;font-size:17px;line-height:26px;background:${t.accent};color:${t.accentInk}` }, '按 OK 翻开'))]
-  return [el('div', { style: `left:0;top:0;width:240px;height:320px;background:${t.accent};color:${t.accentInk}` },
-    el('p', { style: 'left:18px;top:0;width:204px;height:304px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;font:40px/48px var(--disp)' }, answerShown),
-    el('span', { style: 'left:0;top:276px;width:240px;text-align:center;font-size:17px;opacity:.6' }, 'OK 再问一次'))]
+
+// ---- 1:1 Device Screen Renderers ----
+function renderQrSvg(url, rounded, spot, badge) {
+  const qr = QR.encode(url)
+  if (!qr) return `<div style="font-size:12px;color:#E8432A;text-align:center;padding-top:60px">链接过长</div>`
+  const sz = qr.size
+  const sc = Math.floor(150 / sz)
+  const pad = Math.floor((150 - sz * sc) / 2)
+  const inF = (x, y) => (x < 7 && y < 7) || (x >= sz - 7 && y < 7) || (x < 7 && y >= sz - 7)
+  const lo = Math.floor(sz / 2) - 2, hi = Math.floor(sz / 2) + 2
+  const eye = (ex, ey) => {
+    const o = 7 * sc, i1 = 5 * sc, c = 3 * sc
+    const ro = rounded ? 6 : 0, ri = rounded ? 3 : 0
+    return `<rect x="${ex}" y="${ey}" width="${o}" height="${o}" rx="${ro}" fill="#000"/><rect x="${ex+sc}" y="${ey+sc}" width="${i1}" height="${i1}" rx="${ri}" fill="#FFF"/><rect x="${ex+2*sc}" y="${ey+2*sc}" width="${c}" height="${c}" rx="${ri}" fill="#000"/>`
+  }
+  let rects = eye(pad, pad) + eye(pad + (sz - 7) * sc, pad) + eye(pad, pad + (sz - 7) * sc)
+  const dr = rounded && sc >= 6 ? 1 : 0
+  for (let y = 0; y < sz; y++) {
+    for (let x = 0; x < sz; x++) {
+      if (!qr.modules[y * sz + x] || inF(x, y)) continue
+      if (rounded && x >= lo && x <= hi && y >= lo && y <= hi) continue
+      rects += `<rect x="${pad + x * sc}" y="${pad + y * sc}" width="${sc}" height="${sc}" rx="${dr}" fill="#000"/>`
+    }
+  }
+  const mid = rounded ? `<div style="position:absolute;left:61px;top:61px;width:28px;height:28px;background:#FFF;border-radius:5px;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:4px;background:${spot};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFF">${esc(badge)}</div></div>` : ''
+  return `<div style="width:150px;height:150px;position:relative;background:#FFF"><svg viewBox="0 0 150 150" width="150" height="150" shape-rendering="crispEdges" style="display:block"><rect width="150" height="150" fill="#FFF"/>${rects}</svg>${mid}</div>`
 }
-HTMLElement.prototype.also = function (cls) { this.classList.add(cls); return this }
+
 function renderScreen() {
-  if (!P) return
-  const t = T(), sc = $('#screen')
-  sc.style.cssText = `--t-bg:${t.bg};--t-card:${t.card};--t-ink:${t.ink};--t-soft:${t.soft};--t-accent:${t.accent};--t-second:${t.second}`
-  const body = tab === 'id' ? screenId() : tab === 'memo' ? screenMemo() : screenAnswer()
-  const shown = (tab === 'answer' && answerShown) || tab === 'id'   // 这两种画面顶部是主题色，电量和页码点用深色
-  const order = ['id', 'memo', 'answer', 'pond']
-  let y = 138
-  const dots = order.map((k) => { const on = k === tab, h = on ? 14 : 4
-    const d = el('i', { style: `left:231px;top:${y}px;width:4px;height:${h}px;border-radius:2px;background:${shown ? t.accentInk : on ? t.accent : t.ink};opacity:${on ? 1 : .4}` }); y += h + 6; return d })
-  sc.style.setProperty('--t-ink', shown ? t.accentInk : t.ink)
-  sc.replaceChildren(...body.filter(Boolean), ...chrome().filter(Boolean), ...dots)
+  const p = state.profile
+  const st = state.meta.styles[p.style]
+  const pal = st.palettes[p.palette_idx] || st.palettes[0]
+  const sub = deriveSubTheme(p.style, p.palette_idx)
+  const scr = $('screen')
+
+  if (state.tab === 'badge') {
+    const src = avatarSrc()
+    const sk = statusKind()
+    const stText = p.statuses[p.status] || '在线'
+
+    if (p.style === 0) {
+      // 01 解压键帽 (1:1 P5-1)
+      const leds = ['#2EE86C', '#00D8F5', '#FFB800', '#FF453A', '#FF2D55', '#4F5754']
+      const codes = ['ON', 'CHAT', 'AFK', 'MTG', 'DND', 'OFF']
+      const chars = [...stText]
+      const stHtml = chars.length === 4
+        ? `<span>${esc(chars.slice(0,2).join(''))}</span><span>${esc(chars.slice(2).join(''))}</span>`
+        : (chars.length === 2 ? `<span>${esc(chars[0])} ${esc(chars[1])}</span>` : `<span>${esc(stText)}</span>`)
+      const nameFs = cols(p.name) > 6 ? 24 : 32
+      scr.innerHTML = `<div style="width:240px;height:320px;background:${pal.bg};color:${pal.ink};padding:16px 16px 17px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px">
+          <span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${pal.muted}">@${esc(p.handle)}</span>
+          ${p.mbti ? `<span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${pal.bg};background:${pal.ink};padding:1px 6px;border-radius:3px">${esc(p.mbti)}</span>` : ''}
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px">
+          <div style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 2px">
+            <span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${pal.muted}">VIBE // KEY</span>
+            <span style="font-size:14px;font-weight:600;color:${pal.muted}">${esc(p.title)}</span>
+          </div>
+          <div style="width:208px;background:${pal.caseBg};border:2px solid ${pal.caseBorder};border-radius:15px;padding:6px;box-shadow:inset 0 2px 0 rgba(255,255,255,0.85),0 4px 0 ${pal.caseShadow}">
+            <div style="background:${pal.wellBg};border-radius:10px;padding:3px;display:flex;gap:3px">
+              <div style="width:92px;height:96px;position:relative;flex-shrink:0">
+                <svg viewBox="0 0 92 96" width="92" height="96" style="position:absolute;inset:0">
+                  <defs><clipPath id="adm-kc-l"><rect x="2" y="3" width="88" height="91" rx="8"/></clipPath></defs>
+                  <rect x="0" y="1" width="92" height="95" rx="10" fill="${pal.keyLine}"/>
+                  <g clip-path="url(#adm-kc-l)">
+                    <rect x="2" y="3" width="88" height="91" fill="${pal.aBot}"/>
+                    <polygon points="2,3 90,3 82,9 10,9" fill="#FFFFFF"/>
+                    <polygon points="2,3 10,9 10,76 2,94" fill="${pal.aLeft}"/>
+                    <polygon points="90,3 82,9 82,76 90,94" fill="${pal.aRight}"/>
+                  </g>
+                  <rect x="9" y="8" width="74" height="69" rx="9" fill="#FFFFFF" stroke="${pal.aStroke}" stroke-width="1.5"/>
+                  <line x1="18" y1="11" x2="74" y2="11" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div style="position:absolute;left:12px;top:10px;width:68px;height:65px;border-radius:7px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center">
+                  <img src="${src}" style="width:63px;height:63px;object-fit:contain;display:block">
+                </div>
+              </div>
+              <div style="width:92px;height:96px;position:relative;flex-shrink:0">
+                <svg viewBox="0 0 92 96" width="92" height="96" style="position:absolute;inset:0">
+                  <defs><clipPath id="adm-kc-r"><rect x="2" y="3" width="88" height="91" rx="8"/></clipPath></defs>
+                  <rect x="0" y="1" width="92" height="95" rx="10" fill="${pal.keyLine}"/>
+                  <g clip-path="url(#adm-kc-r)">
+                    <rect x="2" y="3" width="88" height="91" fill="${pal.mBot}"/>
+                    <polygon points="2,3 90,3 82,9 10,9" fill="${pal.mHi}"/>
+                    <polygon points="2,3 10,9 10,76 2,94" fill="${pal.mLeft}"/>
+                    <polygon points="90,3 82,9 82,76 90,94" fill="${pal.mRight}"/>
+                  </g>
+                  <rect x="9" y="8" width="74" height="69" rx="9" fill="${pal.mTop}" stroke="${pal.mHi}" stroke-width="1.5"/>
+                  <rect x="15" y="13" width="28" height="8" rx="4" fill="#181D20"/>
+                  <rect x="17.5" y="15" width="23" height="4" rx="2" fill="${leds[sk]}"/>
+                </svg>
+                <div style="position:absolute;left:9px;top:8px;width:74px;height:69px;padding:17px 3px 5px;display:flex;flex-direction:column;align-items:center;justify-content:space-between">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;font-weight:600;line-height:20px;color:${pal.mInk}">${stHtml}</div>
+                  <div style="width:100%;display:flex;justify-content:flex-end;padding-right:4px"><span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;line-height:11px;color:${pal.mSub}">${codes[sk]}</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:2px solid ${pal.ink};padding-top:9px;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px">
+            <span style="font-size:${nameFs}px;font-weight:600;line-height:32px;letter-spacing:-0.5px">${esc(p.name)}</span>
+            ${p.emp_id ? `<span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${pal.muted}">NO.${esc(p.emp_id)}</span>` : ''}
+          </div>
+          ${p.tagline ? `<span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.tagline)}</span>` : ''}
+        </div>
+      </div>`
+      return
+    }
+
+    if (p.style === 1) {
+      // 02 心情贴纸 (1:1 P5-2 Polaroid Edition)
+      const mood = state.meta.moods[p.mood_idx] || state.meta.moods[0]
+      const nameFs = cols(p.name) > 6 ? 24 : 32
+      scr.innerHTML = `<div style="width:240px;height:320px;background:${pal.bg};color:#141414;padding:16px 18px 17px;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="display:flex;justify-content:space-between;font-family:Menlo,monospace;font-size:11px;font-weight:700">
+          <span style="color:${pal.spot}">@${esc(p.handle)}</span>
+          <span style="color:${pal.muted}">MOOD // DAY</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;margin:2px 0">
+          <div style="width:138px;height:150px;background:#FFF;border:2px solid #141414;border-radius:12px;padding:7px 7px 14px;box-shadow:4px 4px 0 #141414;transform:rotate(-2.5deg) translate(-5px,4px);display:flex">
+            <div style="flex:1;border-radius:7px;background:${pal.photoBg};border:1.5px solid #141414;overflow:hidden;display:flex;align-items:flex-end;justify-content:center">
+              <img src="${src}" style="width:118px;height:118px;object-fit:contain">
+            </div>
+          </div>
+          <div style="position:absolute;right:-4px;top:8px;transform:rotate(5deg);background:${mood.bg};color:${mood.ink};border:2px solid #141414;border-radius:8px;padding:3px 7px;display:flex;align-items:center;gap:4px;box-shadow:2px 3px 0 #141414">
+            <svg viewBox="0 0 14 14" width="14" height="14">${MOOD_ICONS[p.mood_idx] || MOOD_ICONS[0]}</svg>
+            <span style="font-size:14px;font-weight:600;white-space:nowrap">${esc(mood.text)}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:${nameFs}px;font-weight:600;line-height:32px">${esc(p.name)}</span>
+            ${p.mbti ? `<span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:#FFF;background:${pal.spot};padding:2px 6px;border-radius:4px">${esc(p.mbti)}</span>` : ''}
+          </div>
+          ${p.tagline ? `<div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${esc(p.tagline)}</div>` : ''}
+          ${p.title ? `<div style="font-size:14px;font-weight:600;color:${pal.muted}">${esc(p.title)}</div>` : ''}
+        </div>
+      </div>`
+      return
+    }
+
+    if (p.style === 2) {
+      // 03 潮流通行证 (1:1 P5-3)
+      const up = (p.handle || 'PASSPORT').toUpperCase()
+      const spFs = up.length <= 6 ? 56 : (up.length <= 8 ? 42 : 34)
+      const nameFs = cols(p.name) > 6 ? 24 : 32
+      scr.innerHTML = `<div style="width:240px;height:320px;background:${pal.bg};color:${pal.ink};padding:16px 14px 17px 10px;display:flex">
+        <div style="width:66px;border-right:2px solid ${pal.rule};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+          <span style="transform:rotate(90deg);font-size:${spFs}px;font-weight:900;letter-spacing:-2px;color:${pal.spine};white-space:nowrap">${esc(up)}</span>
+        </div>
+        <div style="flex:1;padding-left:12px;display:flex;flex-direction:column;justify-content:space-between;min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-right:4px;font-family:Menlo,monospace;font-size:11px;font-weight:700">
+            <span style="color:${pal.muted}">${esc(p.pass_tag || 'CREATOR PASS')}</span>
+            ${p.emp_id ? `<span style="color:${pal.muted}">#${esc(p.emp_id)}</span>` : `<svg viewBox="0 0 12 12" width="12" height="12"><path d="M6 1V11M1 6H11" stroke="${pal.spine}" stroke-width="2"/></svg>`}
+          </div>
+          <div style="display:flex;justify-content:flex-start;margin:4px 0 2px">
+            <div style="width:120px;height:120px;border-radius:50%;background:${pal.avatarBg || '#FFF8E0'};border:2.5px solid ${pal.ink};overflow:hidden;display:flex;align-items:flex-end;justify-content:center">
+              <img src="${src}" style="width:108px;height:108px;object-fit:contain">
+            </div>
+          </div>
+          <div style="border-top:2px solid ${pal.rule};padding-top:8px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:4px">
+              <span style="font-size:${nameFs}px;font-weight:600;line-height:32px">${esc(p.name)}</span>
+              ${p.mbti ? `<span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;padding:2px 5px;background:${pal.badgeBg};color:${pal.badgeInk}">${esc(p.mbti)}</span>` : ''}
+            </div>
+            ${p.title ? `<span style="font-size:14px;font-weight:600;color:${pal.muted}">${esc(p.title)}</span>` : ''}
+            ${p.tagline ? `<div style="font-size:14px;font-weight:600;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.tagline)}</div>` : ''}
+          </div>
+        </div>
+      </div>`
+      return
+    }
+
+    if (p.style === 3) {
+      // 04 像素冒险 (1:1 P5-4-GBA-PixelBase.dc.html)
+      const night = sk === 5
+      const busy = sk === 3 || sk === 4
+      const sc = night
+        ? { sky:'#0C1438', hill:'#134A45', hillDot:'#0A2B29', brick:'#246E82', brickHi:'#52B2C9', deep:'#184A59', pipe:'#007A48', pipeHi:'#3CD68C', pipeDk:'#004A2B' }
+        : { sky:'#5C94FC', hill:'#00A800', hillDot:'#006800', brick:'#C84C0C', brickHi:'#FC9838', deep:'#9E3808', pipe:'#00A800', pipeHi:'#80F850', pipeDk:'#006800' }
+      const chars = [...stText].slice(0, 4)
+      const leftBrick = chars.length <= 3
+        ? `<svg viewBox="0 0 16 16" width="32" height="32" shape-rendering="crispEdges" style="flex-shrink:0;display:block"><rect x="0" y="0" width="16" height="16" fill="#182028"/><rect x="1" y="1" width="14" height="14" fill="${sc.brick}"/><rect x="1" y="1" width="14" height="2" fill="${sc.brickHi}"/><rect x="1" y="5" width="14" height="1" fill="#182028"/><rect x="1" y="10" width="14" height="1" fill="#182028"/><rect x="7" y="1" width="1" height="4" fill="#182028"/><rect x="4" y="6" width="1" height="4" fill="#182028"/><rect x="11" y="6" width="1" height="4" fill="#182028"/><rect x="7" y="11" width="1" height="4" fill="#182028"/></svg>`
+        : ''
+      const rivets = `<span style="position:absolute;left:2px;top:2px;width:2px;height:2px;background:#7A3E08"></span><span style="position:absolute;right:2px;top:2px;width:2px;height:2px;background:#7A3E08"></span><span style="position:absolute;left:2px;bottom:2px;width:2px;height:2px;background:#7A3E08"></span><span style="position:absolute;right:2px;bottom:2px;width:2px;height:2px;background:#7A3E08"></span>`
+      const ITEM_SVGS = [
+        // 0 在线: 超级红蘑菇
+        `<rect x="3" y="0" width="6" height="1" fill="#182028"/><rect x="1" y="1" width="10" height="2" fill="#182028"/><rect x="0" y="3" width="12" height="4" fill="#182028"/><rect x="2" y="7" width="8" height="4" fill="#182028"/><rect x="3" y="11" width="6" height="1" fill="#182028"/><rect x="3" y="1" width="6" height="5" fill="#E52521"/><rect x="1" y="3" width="10" height="3" fill="#E52521"/><rect x="4" y="2" width="4" height="2" fill="#FFFFFF"/><rect x="1" y="4" width="2" height="2" fill="#FFFFFF"/><rect x="9" y="4" width="2" height="2" fill="#FFFFFF"/><rect x="3" y="7" width="6" height="4" fill="#FFE6C2"/><rect x="4" y="8" width="1" height="2" fill="#182028"/><rect x="7" y="8" width="1" height="2" fill="#182028"/>`,
+        // 1 来聊天: 1-UP 绿蘑菇
+        `<rect x="3" y="0" width="6" height="1" fill="#182028"/><rect x="1" y="1" width="10" height="2" fill="#182028"/><rect x="0" y="3" width="12" height="4" fill="#182028"/><rect x="2" y="7" width="8" height="4" fill="#182028"/><rect x="3" y="11" width="6" height="1" fill="#182028"/><rect x="3" y="1" width="6" height="5" fill="#00A800"/><rect x="1" y="3" width="10" height="3" fill="#00A800"/><rect x="4" y="2" width="4" height="2" fill="#FFFFFF"/><rect x="1" y="4" width="2" height="2" fill="#FFFFFF"/><rect x="9" y="4" width="2" height="2" fill="#FFFFFF"/><rect x="3" y="7" width="6" height="4" fill="#FFE6C2"/><rect x="4" y="8" width="1" height="2" fill="#182028"/><rect x="7" y="8" width="1" height="2" fill="#182028"/>`,
+        // 2 摸鱼中: 经典大问号 ?
+        `<rect x="4" y="2" width="6" height="2" fill="#7A3E08"/><rect x="8" y="4" width="2" height="2" fill="#7A3E08"/><rect x="6" y="6" width="3" height="2" fill="#7A3E08"/><rect x="6" y="9" width="2" height="2" fill="#7A3E08"/><rect x="3" y="1" width="6" height="2" fill="#FFFFFF"/><rect x="2" y="2" width="2" height="2" fill="#FFFFFF"/><rect x="7" y="2" width="2" height="3" fill="#FFFFFF"/><rect x="5" y="5" width="3" height="2" fill="#FFFFFF"/><rect x="5" y="8" width="2" height="2" fill="#FFFFFF"/>`,
+        // 3 开会中: 红「!」警示方块
+        `<rect x="2" y="0" width="8" height="12" fill="#182028"/><rect x="3" y="1" width="6" height="10" fill="#E52521"/><rect x="5" y="2" width="2" height="5" fill="#FFFFFF"/><rect x="5" y="8" width="2" height="2" fill="#FFFFFF"/>`,
+        // 4 专注中: 经典火焰花
+        `<rect x="2" y="0" width="8" height="7" fill="#182028"/><rect x="1" y="1" width="10" height="5" fill="#182028"/><rect x="2" y="1" width="8" height="5" fill="#E52521"/><rect x="3" y="2" width="6" height="3" fill="#FFFFFF"/><rect x="4" y="3" width="1" height="2" fill="#182028"/><rect x="7" y="3" width="1" height="2" fill="#182028"/><rect x="5" y="7" width="2" height="5" fill="#182028"/><rect x="5" y="7" width="2" height="4" fill="#00A800"/><rect x="2" y="8" width="3" height="3" fill="#00A800"/><rect x="7" y="8" width="3" height="3" fill="#00A800"/>`,
+        // 5 下班了: 经典通关红旗旗杆
+        `<rect x="8" y="0" width="3" height="3" fill="#182028"/><rect x="9" y="1" width="1" height="1" fill="#58D854"/><rect x="8" y="3" width="3" height="9" fill="#182028"/><rect x="9" y="3" width="1" height="8" fill="#FFFFFF"/><rect x="1" y="2" width="7" height="6" fill="#182028"/><rect x="2" y="3" width="6" height="4" fill="#E52521"/><rect x="1" y="4" width="2" height="2" fill="#E52521"/><rect x="4" y="4" width="2" height="2" fill="#FFFFFF"/>`,
+      ]
+      const charBricks = chars.map((c) => `<div style="width:32px;height:32px;background:#FCDC5C;border:2px solid #182028;border-left:0;box-shadow:inset 2px 2px 0 #FFF4B8,inset -2px -2px 0 #E08B28;position:relative;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;line-height:20px;color:#182028;flex-shrink:0">${rivets}${esc(c)}</div>`).join('')
+      const spSizes = [104, 88, 68, 88, 104, 68]
+      const spSz = spSizes[sk % 6]
+      const skyDecor = night
+        ? `<svg viewBox="0 0 120 88" width="240" height="176" shape-rendering="crispEdges" style="position:absolute;left:0;top:0;pointer-events:none"><rect x="102" y="28" width="6" height="2" fill="#FFE666"/><rect x="100" y="30" width="4" height="2" fill="#FFE666"/><rect x="99" y="32" width="4" height="5" fill="#FFE666"/><rect x="100" y="37" width="4" height="2" fill="#FFE666"/><rect x="102" y="39" width="6" height="2" fill="#FFE666"/><rect x="12" y="32" width="2" height="2" fill="#FFFDF5"/><rect x="22" y="42" width="2" height="2" fill="#FFE666"/><rect x="9" y="52" width="2" height="2" fill="#9EE6FF"/><rect x="88" y="44" width="2" height="2" fill="#FFFDF5"/><rect x="34" y="76" width="2" height="2" fill="#88FF9E"/><rect x="84" y="78" width="2" height="2" fill="#FFE64D"/></svg>`
+        : `<svg viewBox="0 0 120 60" width="240" height="120" shape-rendering="crispEdges" style="position:absolute;left:0;top:0;pointer-events:none"><rect x="5" y="38" width="18" height="6" fill="#FFFFFF"/><rect x="8" y="35" width="12" height="3" fill="#FFFFFF"/><rect x="6" y="43" width="16" height="1" fill="#BCE0FF"/><rect x="11" y="38" width="1" height="2" fill="#182028"/><rect x="15" y="38" width="1" height="2" fill="#182028"/><rect x="97" y="28" width="18" height="6" fill="#FFFFFF"/><rect x="100" y="25" width="12" height="3" fill="#FFFFFF"/><rect x="98" y="33" width="16" height="1" fill="#BCE0FF"/><rect x="103" y="28" width="1" height="2" fill="#182028"/><rect x="107" y="28" width="1" height="2" fill="#182028"/></svg>`
+      const piranha = busy
+        ? `<svg viewBox="0 0 16 22" width="32" height="44" shape-rendering="crispEdges" style="position:absolute;left:189px;top:84px;pointer-events:none;z-index:2"><rect x="3" y="0" width="2" height="1" fill="#182028"/><rect x="11" y="0" width="2" height="1" fill="#182028"/><rect x="2" y="1" width="4" height="1" fill="#182028"/><rect x="10" y="1" width="4" height="1" fill="#182028"/><rect x="1" y="2" width="6" height="2" fill="#182028"/><rect x="9" y="2" width="6" height="2" fill="#182028"/><rect x="1" y="4" width="14" height="6" fill="#182028"/><rect x="2" y="10" width="12" height="2" fill="#182028"/><rect x="4" y="12" width="8" height="1" fill="#182028"/><rect x="2" y="2" width="3" height="8" fill="#E52521"/><rect x="11" y="2" width="3" height="8" fill="#E52521"/><rect x="4" y="6" width="8" height="5" fill="#E52521"/><rect x="5" y="11" width="6" height="1" fill="#E52521"/><rect x="4" y="1" width="1" height="2" fill="#FFFFFF"/><rect x="5" y="2" width="1" height="3" fill="#FFFFFF"/><rect x="6" y="4" width="1" height="2" fill="#FFFFFF"/><rect x="11" y="1" width="1" height="2" fill="#FFFFFF"/><rect x="10" y="2" width="1" height="3" fill="#FFFFFF"/><rect x="9" y="4" width="1" height="2" fill="#FFFFFF"/><rect x="7" y="5" width="2" height="2" fill="#FFFFFF"/><rect x="6" y="2" width="1" height="2" fill="#182028"/><rect x="9" y="2" width="1" height="2" fill="#182028"/><rect x="7" y="3" width="2" height="2" fill="#182028"/><rect x="3" y="5" width="2" height="2" fill="#FFFFFF"/><rect x="11" y="5" width="2" height="2" fill="#FFFFFF"/><rect x="7" y="8" width="2" height="2" fill="#FFFFFF"/><rect x="6" y="13" width="4" height="9" fill="#182028"/><rect x="7" y="13" width="2" height="9" fill="#00A800"/><rect x="7" y="13" width="1" height="9" fill="#58D854"/><rect x="1" y="14" width="4" height="2" fill="#182028"/><rect x="2" y="16" width="5" height="3" fill="#182028"/><rect x="2" y="15" width="3" height="2" fill="#58D854"/><rect x="3" y="16" width="3" height="2" fill="#00A800"/><rect x="11" y="14" width="4" height="2" fill="#182028"/><rect x="9" y="16" width="5" height="3" fill="#182028"/><rect x="11" y="15" width="3" height="2" fill="#58D854"/><rect x="10" y="16" width="3" height="2" fill="#00A800"/></svg>`
+        : ''
+      scr.innerHTML = `<div style="width:240px;height:320px;background:${sc.sky};display:flex;flex-direction:column;position:relative;overflow:hidden;image-rendering:pixelated">
+        <div style="height:196px;position:relative;flex-shrink:0">
+          <svg viewBox="0 0 120 98" width="240" height="196" shape-rendering="crispEdges" style="position:absolute;left:0;top:0;pointer-events:none">
+            <rect x="0" y="79" width="36" height="9" fill="${sc.hill}"/><rect x="4" y="75" width="28" height="4" fill="${sc.hill}"/><rect x="9" y="71" width="18" height="4" fill="${sc.hill}"/><rect x="14" y="68" width="8" height="3" fill="${sc.hill}"/><rect x="13" y="75" width="2" height="3" fill="${sc.hillDot}"/><rect x="21" y="78" width="2" height="3" fill="${sc.hillDot}"/>
+            <rect x="91" y="64" width="23" height="8" fill="#182028"/><rect x="92" y="65" width="21" height="6" fill="${sc.pipe}"/><rect x="94" y="65" width="3" height="6" fill="${sc.pipeHi}"/><rect x="99" y="65" width="1" height="6" fill="${sc.pipeHi}"/><rect x="108" y="65" width="5" height="6" fill="${sc.pipeDk}"/><rect x="93" y="72" width="19" height="16" fill="#182028"/><rect x="94" y="72" width="17" height="16" fill="${sc.pipe}"/><rect x="96" y="72" width="3" height="16" fill="${sc.pipeHi}"/><rect x="100" y="72" width="1" height="16" fill="${sc.pipeHi}"/><rect x="107" y="72" width="4" height="16" fill="${sc.pipeDk}"/>
+            <rect x="0" y="88" width="120" height="10" fill="${sc.brick}"/><rect x="0" y="88" width="120" height="1" fill="${sc.brickHi}"/><rect x="0" y="93" width="120" height="1" fill="#182028"/><rect x="12" y="88" width="1" height="5" fill="#182028"/><rect x="28" y="88" width="1" height="5" fill="#182028"/><rect x="44" y="88" width="1" height="5" fill="#182028"/><rect x="60" y="88" width="1" height="5" fill="#182028"/><rect x="76" y="88" width="1" height="5" fill="#182028"/><rect x="92" y="88" width="1" height="5" fill="#182028"/><rect x="108" y="88" width="1" height="5" fill="#182028"/><rect x="6" y="94" width="1" height="4" fill="#182028"/><rect x="22" y="94" width="1" height="4" fill="#182028"/><rect x="38" y="94" width="1" height="4" fill="#182028"/><rect x="54" y="94" width="1" height="4" fill="#182028"/><rect x="70" y="94" width="1" height="4" fill="#182028"/><rect x="86" y="94" width="1" height="4" fill="#182028"/><rect x="102" y="94" width="1" height="4" fill="#182028"/>
+          </svg>
+          ${skyDecor}
+          ${piranha}
+          <div style="position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:stretch;z-index:4;box-shadow:3px 3px 0 rgba(24,32,40,0.32)">
+            ${leftBrick}
+            <div style="width:32px;height:32px;background:#FCDC5C;border:2px solid #182028;${chars.length<=3?'border-left:0;':''}box-shadow:inset 2px 2px 0 #FFF4B8,inset -2px -2px 0 #E08B28;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0">${rivets}<svg viewBox="0 0 12 12" width="22" height="22" shape-rendering="crispEdges">${ITEM_SVGS[sk % 6]}</svg></div>
+            ${charBricks}
+          </div>
+          <svg viewBox="0 0 24 24" width="${spSz}" height="${spSz}" shape-rendering="crispEdges" style="position:absolute;left:${120-spSz/2}px;bottom:18px;z-index:3">${PIXEL_SVG[p.pixel_preset] || PIXEL_SVG[0]}</svg>
+        </div>
+        <div style="flex:1;background:${sc.deep};padding:6px 13px 16px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2">
+          <div style="background:#FFFDF5;border:3px solid #182028;box-shadow:inset 0 0 0 2px #E4DEC8;padding:8px 10px;display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+              <span style="font-size:24px;font-weight:600;line-height:24px;color:#182028">${esc(p.name)}</span>
+              <div style="display:flex;align-items:center;gap:4px;font-family:Menlo,monospace">
+                ${p.mbti ? `<span style="font-size:11px;font-weight:700;color:#FFF;background:#E52521;padding:2px 5px">${esc(p.mbti)}</span>` : ''}
+                ${p.emp_id ? `<span style="font-size:11px;font-weight:700;color:#4C5866">#${esc(p.emp_id)}</span>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:14px;font-weight:600;color:#4C5866">${esc(p.title)}</span>
+              <span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:#2050E8">@${esc(p.handle)}</span>
+            </div>
+            <div style="border-top:2px solid #D8D2BE;padding-top:5px;display:flex;align-items:center;justify-content:space-between;gap:4px">
+              <span style="font-size:14px;font-weight:600;color:#182028;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.tagline ? `「${esc(p.tagline)}」` : ''}</span>
+              <svg viewBox="0 0 8 6" width="10" height="8" shape-rendering="crispEdges" style="flex-shrink:0"><rect x="0" y="0" width="8" height="2" fill="#E52521"/><rect x="2" y="2" width="4" height="2" fill="#E52521"/><rect x="3" y="4" width="2" height="2" fill="#E52521"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>`
+      return
+    }
+
+    // 05 复古终端 (1:1 P5-5 Pip-Boy CRT)
+    const activeTab = sk === 2 ? 1 : (sk === 5 ? 2 : 0)
+    const isMtg = sk === 3, isOff = sk === 5, isSlk = sk === 2
+    const radCol = isMtg ? '#FF3B30' : pal.fg
+    const hdrs = ['CND', 'CHA', 'AID', 'RADS', 'VATS', 'OFF']
+    const buffs = ['SIGNAL:OPEN', 'SPEECH 100%', 'NUKA AP+35', 'RADS +12/s', 'V.A.T.S 95%', 'VAULT SHUT']
+    const barCnts = [5, 5, 3, 2, 5, 0]
+    const notchSvg = activeTab === 0 ? `<polyline points="0,9 0,7 6,7 6,1 42,1 42,7 214,7" fill="none" stroke="${pal.fg}" stroke-width="2"/>`
+      : activeTab === 1 ? `<polyline points="0,7 68,7 68,1 98,1 98,7 214,7" fill="none" stroke="${pal.fg}" stroke-width="2"/>`
+      : `<polyline points="0,7 122,7 122,1 158,1 158,7 214,7" fill="none" stroke="${pal.fg}" stroke-width="2"/>`
+    const bars = [0,1,2,3,4].map((i) => {
+      const c = isMtg && i >= 2 ? '#FF3B30' : (i < barCnts[sk] ? pal.fg : pal.dark)
+      return `<div style="flex:1;height:6px;background:${c};border:1px solid ${isMtg && i >= 2 ? '#FF3B30' : pal.fg}"></div>`
+    }).join('')
+    const egg = sk === 1 ? `<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:${pal.fg};color:${pal.bg};padding:1px 5px;font-family:Menlo,monospace;font-size:11px;font-weight:700;white-space:nowrap">CHA 100%</div>`
+      : isMtg ? `<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#FF3B30;color:#FFF;padding:1px 5px;font-family:Menlo,monospace;font-size:11px;font-weight:700;white-space:nowrap">+12 RAD/s</div>`
+      : sk === 4 ? `<svg viewBox="0 0 98 108" width="98" height="108" style="position:absolute;inset:0;pointer-events:none"><circle cx="49" cy="54" r="24" fill="none" stroke="${pal.fg}" stroke-width="1.5" stroke-dasharray="5 3"/><line x1="49" y1="22" x2="49" y2="34" stroke="${pal.fg}" stroke-width="2"/><line x1="49" y1="74" x2="49" y2="86" stroke="${pal.fg}" stroke-width="2"/><line x1="17" y1="54" x2="29" y2="54" stroke="${pal.fg}" stroke-width="2"/><line x1="69" y1="54" x2="81" y2="54" stroke="${pal.fg}" stroke-width="2"/></svg><div style="position:absolute;top:8px;right:6px;background:${pal.fg};color:${pal.bg};padding:1px 4px;font-family:Menlo,monospace;font-size:11px;font-weight:700">95%</div>`
+      : isOff ? `<div style="position:absolute;left:4px;right:4px;top:43px;background:${pal.bg};border-top:2px solid ${pal.fg};border-bottom:2px solid ${pal.fg};padding:3px 0;text-align:center;font-family:Menlo,monospace;font-size:11px;font-weight:700">SEALED</div>` : ''
+    const radIcon = isSlk
+      ? `<svg viewBox="0 0 10 14" width="10" height="14" shape-rendering="crispEdges"><rect x="3" y="0" width="4" height="2" fill="${pal.fg}"/><rect x="4" y="2" width="2" height="3" fill="${pal.fg}"/><rect x="2" y="5" width="6" height="8" fill="${pal.fg}"/><rect x="3" y="7" width="4" height="3" fill="${pal.bg}"/></svg>`
+      : `<svg viewBox="0 0 14 14" width="13" height="13"><circle cx="7" cy="7" r="1.6" fill="${radCol}"/><path d="M7 5.2 L4.4 1.2 A6.2 6.2 0 0 1 9.6 1.2 Z" fill="${radCol}"/><path d="M8.6 7.9 L12.9 7.9 A6.2 6.2 0 0 1 10.2 12.2 Z" fill="${radCol}"/><path d="M5.4 7.9 L3.8 12.2 A6.2 6.2 0 0 1 1.1 7.9 Z" fill="${radCol}"/></svg>`
+    const limb = isOff ? pal.dim : pal.fg
+    scr.innerHTML = `<div style="width:240px;height:320px;background:${pal.bg};color:${pal.fg};padding:14px 13px 16px;display:flex;flex-direction:column;justify-content:space-between;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,0.24) 0px,rgba(0,0,0,0.24) 1px,transparent 1px,transparent 3px)">
+      <div style="display:flex;flex-direction:column;gap:2px;font-family:Menlo,monospace;font-size:11px;font-weight:700">
+        <div style="display:flex;justify-content:space-between;padding:0 8px">
+          <span style="color:${activeTab===0?pal.fg:pal.dim}">STAT</span>
+          <span style="color:${activeTab===1?pal.fg:pal.dim}">INV</span>
+          <span style="color:${activeTab===2?pal.fg:pal.dim}">DATA</span>
+          <span style="color:${pal.dim}">MAP</span>
+        </div>
+        <svg viewBox="0 0 214 10" width="214" height="10">${notchSvg}</svg>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;margin:2px 0">
+        <div style="width:98px;height:108px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg viewBox="0 0 98 108" width="98" height="108" style="position:absolute;inset:0">
+            <rect x="35" y="1" width="28" height="4" fill="${limb}"/><rect x="35" y="103" width="28" height="4" fill="${limb}"/>
+            <rect x="1" y="42" width="4" height="24" fill="${limb}"/><rect x="93" y="42" width="4" height="24" fill="${limb}"/>
+            <polyline points="10,20 10,11 20,11" fill="none" stroke="${pal.fg}" stroke-width="2"/>
+            <polyline points="78,11 88,11 88,20" fill="none" stroke="${pal.fg}" stroke-width="2"/>
+            <polyline points="10,88 10,97 20,97" fill="none" stroke="${pal.fg}" stroke-width="2"/>
+            <polyline points="78,97 88,97 88,88" fill="none" stroke="${pal.fg}" stroke-width="2"/>
+          </svg>
+          <div style="width:72px;height:78px;background:${pal.dark};overflow:hidden;display:flex;align-items:flex-end;justify-content:center;opacity:${isOff?0.42:1}">
+            <img src="${src}" style="width:70px;height:70px;object-fit:contain;filter:${pal.filter}">
+          </div>
+          ${egg}
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid ${pal.fg};padding-bottom:3px;font-family:Menlo,monospace;font-size:11px;font-weight:700">
+            <div style="display:flex;align-items:center;gap:4px">${radIcon}<span style="color:${radCol}">${hdrs[sk]}</span></div>
+            ${p.emp_id ? `<span>V-${esc(p.emp_id)}</span>` : ''}
+          </div>
+          <div style="background:${isMtg?'#FF3B30':(isOff?pal.dark:pal.fg)};color:${isMtg?'#FFF':(isOff?pal.fg:pal.bg)};padding:6px 4px;text-align:center;font-size:18px;font-weight:600;line-height:20px">${esc(stText)}</div>
+          <div style="display:flex;gap:3px">${bars}</div>
+          <div style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${radCol};white-space:nowrap">${buffs[sk]}</div>
+        </div>
+      </div>
+      <div style="border-top:2px solid ${pal.fg};padding-top:7px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between">
+          <div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:${cols(p.name)>6?24:32}px;font-weight:600;line-height:32px">${esc(p.name)}</span><span style="font-size:14px;font-weight:600;opacity:.88">${esc(p.title)}</span></div>
+          <span style="font-family:Menlo,monospace;font-size:11px;font-weight:700">@${esc(p.handle)}</span>
+        </div>
+        <div style="display:flex;gap:4px">
+          ${p.mbti ? `<span style="background:${pal.dark};border:1.5px solid ${pal.fg};padding:4px 6px;font-family:Menlo,monospace;font-size:11px;font-weight:700">${esc(p.mbti)}</span>` : ''}
+          ${p.tagline ? `<span style="flex:1;background:${pal.dark};border:1.5px solid ${pal.fg};padding:4px 7px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">▶ ${esc(p.tagline)}</span>` : ''}
+        </div>
+      </div>
+    </div>`
+    return
+  }
+
+  // ---- Sub-page preview: QR or Memo (1:1 P6-1..P6-4) ----
+  const isWork = p.sub_scene === 0
+  const src = avatarSrc()
+
+  if (state.pvTab === 'qr') {
+    const qrs = p.qrs || []
+    const idx = qrs.length ? Math.min(p.qr_idx || 0, qrs.length - 1) : 0
+    const cur = qrs[idx]
+    const ch = state.meta.qrChannels[cur ? cur.channel : (isWork ? 0 : 1)] || state.meta.qrChannels[5]
+
+    if (isWork) {
+      const wk = sub.wk
+      const body = cur
+        ? `<div style="flex:1;background:#FFF;display:flex;align-items:center;justify-content:center;position:relative">${renderQrSvg(cur.url, p.qr_rounded, ch.spot, ch.badge)}</div>`
+        : `<div style="flex:1;background:#FFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center"><div style="width:88px;height:88px;border:2px dashed #C4CBD4;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:Menlo,monospace;font-size:11px;color:#8A94A3">NO QR</div><span style="font-size:16px;font-weight:600;color:#16191E">尚未添加名片码</span></div>`
+      const pager = qrs.map((_, i) => `<div style="width:${i===idx?16:5}px;height:4px;border-radius:2px;background:${i===idx?ch.spot:'#CBD2DC'}"></div>`).join('')
+      const qrCap = cur ? (cur.label || ch.name) : '最多 3 张名片码'
+      scr.innerHTML = `<div style="width:240px;height:320px;background:#FFF;display:flex;flex-direction:column;justify-content:space-between">
+        <div style="height:52px;background:${wk.headBg};border-bottom:1.5px solid ${wk.headBd};padding:14px 20px 8px;display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+          <div style="display:flex;align-items:baseline;gap:7px;min-width:0"><span style="font-size:18px;font-weight:600;line-height:20px;color:${wk.ink};white-space:nowrap">${esc(p.name)}</span><span style="font-size:14px;font-weight:600;line-height:16px;color:${wk.muted};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title)}</span></div>
+          <span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${wk.muted};flex-shrink:0">0${cur?idx+1:0}/0${qrs.length}</span>
+        </div>
+        ${body}
+        <div style="height:54px;border-top:1.5px solid ${wk.rule};background:${wk.paper};padding:8px 20px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="width:10px;height:10px;border-radius:3px;background:${cur?ch.spot:'#9CA3AF'};flex-shrink:0"></span><span style="font-size:${cur?18:14}px;font-weight:600;color:${wk.ink};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(qrCap)}</span></div>
+          <div style="display:flex;gap:3px;flex-shrink:0">${pager}</div>
+        </div>
+      </div>`
+    } else {
+      const stu = sub.stu
+      const body = cur ? renderQrSvg(cur.url, p.qr_rounded, ch.spot, ch.badge) : `<div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#141414">还没贴社交码</div></div>`
+      const pager = qrs.map((_, i) => `<div style="width:${i===idx?14:6}px;height:6px;border-radius:99px;background:${i===idx?stu.dotOn:stu.dotOff};border:1.2px solid #141414"></div>`).join('')
+      const qrCap = cur ? (cur.label || ch.name) : '最多 3 张社交码'
+      scr.innerHTML = `<div style="width:240px;height:320px;background:${stu.qrBg};color:${stu.qrInk};padding:14px 16px 15px;display:flex;flex-direction:column;align-items:center;justify-content:space-between">
+        <div style="width:100%;padding:2px 4px 0;display:flex;align-items:baseline;justify-content:space-between;gap:6px">
+          <div style="display:flex;align-items:baseline;gap:7px;min-width:0"><span style="font-size:18px;font-weight:600;line-height:20px;white-space:nowrap">${esc(p.name)}</span><span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${stu.qrSub}">@${esc(p.handle)}</span></div>
+          ${p.mbti ? `<span style="padding:2px 6px;border-radius:5px;background:${stu.badgeBg};color:${stu.badgeInk};border:1.5px solid #141414;font-family:Menlo,monospace;font-size:11px;font-weight:700;flex-shrink:0">${esc(p.mbti)}</span>` : ''}
+        </div>
+        <div style="width:208px;height:196px;border-radius:14px;background:#FFF;border:2.5px solid #141414;box-shadow:3px 3px 0 #141414;display:flex;align-items:center;justify-content:center">${body}</div>
+        <div style="width:100%;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:6px">
+          ${cur ? `<span style="padding:3px 10px;border-radius:99px;background:${ch.spot};color:#FFF;border:1.8px solid #141414;box-shadow:2px 2px 0 #141414;font-size:14px;font-weight:600;white-space:nowrap">${esc(qrCap)}</span>` : `<span style="font-size:14px;font-weight:600">${esc(qrCap)}</span>`}
+          <div style="display:flex;gap:4px;flex-shrink:0">${pager}</div>
+        </div>
+      </div>`
+    }
+    return
+  }
+
+  // ---- Memo Preview (Scheme A: Undone Starred -> Undone Regular -> Done Sunk to Bottom) ----
+  const rawMemos = p.memos || []
+  const memos = [
+    ...rawMemos.filter((m) => !m.done && m.star),
+    ...rawMemos.filter((m) => !m.done && !m.star),
+    ...rawMemos.filter((m) => m.done),
+  ]
+  const total = memos.length
+  const doneCount = memos.filter((m) => m.done).length
+  const firstUndone = memos.findIndex((m) => !m.done)
+  const vis = memos.slice(0, 4)
+  const hiddenMore = memos.slice(vis.length).filter((m) => !m.done).length
+  const allDone = total > 0 && doneCount >= total
+  const foot = allDone ? (isWork ? '今日全部清空' : 'MEMO') : (hiddenMore > 0 ? `↓ 还有 ${hiddenMore} 条` : '短按切换')
+
+  const starSvg = (done) => `<svg viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:-2px;margin-right:3px"><path d="M7 1 L8.8 4.8 L12.9 5.3 L9.8 8.1 L10.6 12.2 L7 10.2 L3.4 12.2 L4.2 8.1 L1.1 5.3 L5.2 4.8 Z" fill="${done?'#C99E8C':'#F04E23'}"/></svg>`
+
+  if (isWork) {
+    const wk = sub.wk
+    const pct = total ? Math.round((doneCount / total) * 100) : 0
+    const rows = vis.map((m, li) => {
+      const next = li === firstUndone
+      return `<div style="height:54px;padding:6px 14px;border-bottom:1px solid ${wk.rule};background:${next?wk.active:'transparent'};display:flex;align-items:center;gap:8px;position:relative">
+        ${next?`<div style="position:absolute;left:0;top:5px;bottom:5px;width:4px;background:${wk.spot};border-radius:0 2px 2px 0"></div>`:''}
+        <div style="width:16px;height:16px;border-radius:4px;border:1.8px solid ${m.done||next?wk.spot:'#698C7E'};background:${m.done?wk.spot:'#FFF'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#FFF;font-size:11px;font-weight:900">${m.done?'✓':''}</div>
+        <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;color:${m.done?'#7E9A8F':wk.ink};text-decoration:${m.done?'line-through':'none'};text-decoration-color:${wk.spot};text-decoration-thickness:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${m.star?starSvg(m.done):''}${esc(m.text)}</span>
+      </div>`
+    }).join('')
+    scr.innerHTML = `<div style="width:240px;height:320px;background:${wk.paper};color:${wk.ink};display:flex;flex-direction:column">
+      <div style="height:54px;background:${wk.headBg};border-bottom:1.5px solid ${wk.headBd};padding:15px 20px 8px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:16px;border-radius:3px;background:${wk.spot}"></span><span style="font-size:18px;font-weight:600">待办</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-family:Menlo,monospace;font-size:11px;font-weight:700;color:${wk.spot}">${doneCount}/${total}</span><div style="width:48px;height:4px;border-radius:99px;background:${wk.barOff};overflow:hidden"><div style="width:${pct}%;height:100%;background:${wk.spot}"></div></div></div>
+      </div>
+      ${total ? `<div style="flex:1;display:flex;flex-direction:column;padding-bottom:14px">${rows}<div style="margin-top:auto;padding:6px 20px 2px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600;color:${wk.muted}">${foot}</span><span style="padding:2px 7px;background:${wk.keyBg};border-radius:99px;font-size:11px;font-weight:700;color:${wk.spot}">${allDone?'ALL DONE':'长按 ✓'}</span></div></div>`
+        : `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><span style="font-size:18px;font-weight:600">今日暂无待办</span></div>`}
+    </div>`
+  } else {
+    const stu = sub.stu
+    const rows = vis.map((m, li) => {
+      const next = li === firstUndone
+      return `<div style="height:49px;padding:5px 8px;border-radius:10px;background:${next?stu.hl:(m.done?'rgba(255,255,255,0.45)':'rgba(255,255,255,0.9)')};border:${next?'2px solid #141414':'1.5px solid rgba(20,20,20,0.22)'};box-shadow:${next?'2px 2px 0 #141414':'none'};display:flex;align-items:center;gap:8px">
+        <div style="width:17px;height:17px;border-radius:50%;border:2px solid #141414;background:${m.done?'#141414':'#FFF'};color:${stu.chk};font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${m.done?'✓':''}</div>
+        <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;color:${m.done?'#8B8370':'#141414'};text-decoration:${m.done?'line-through':'none'};text-decoration-color:${stu.spot};text-decoration-thickness:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${m.star?starSvg(m.done):''}${esc(m.text)}</span>
+      </div>`
+    }).join('')
+    scr.innerHTML = `<div style="width:240px;height:320px;background-color:${stu.paper};background-image:linear-gradient(to right,${stu.grid} 1px,transparent 1px),linear-gradient(to bottom,${stu.grid} 1px,transparent 1px);background-size:16px 16px;padding:14px 14px 15px;display:flex;flex-direction:column;position:relative;color:#141414">
+      <div style="position:absolute;left:76px;top:6px;width:88px;height:12px;background:${stu.tape};border:1.5px solid #141414;transform:rotate(-1.5deg)"></div>
+      <div style="margin-top:8px;padding:0 4px 8px;border-bottom:2px solid #141414;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:6px">
+          <svg viewBox="0 0 16 16" width="16" height="16"><path d="M2.5 2 H13.5 V10.5 L10 14 H2.5 Z" fill="${stu.note}" stroke="#141414" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 14 V10.5 H13.5" fill="none" stroke="#141414" stroke-width="1.5"/><line x1="5" y1="5.5" x2="11" y2="5.5" stroke="#141414" stroke-width="1.5"/><line x1="5" y1="8.5" x2="9" y2="8.5" stroke="#141414" stroke-width="1.5"/></svg>
+          <span style="font-size:18px;font-weight:600">今日清单</span>
+        </div>
+        <div style="background:${stu.pillBg};color:#FFF;border:1.8px solid #141414;border-radius:99px;padding:2px 8px;box-shadow:2px 2px 0 #141414;font-family:Menlo,monospace;font-size:11px;font-weight:700">${doneCount}/${total}</div>
+      </div>
+      ${total ? `<div style="flex:1;display:flex;flex-direction:column;gap:5px;padding:8px 0 4px">${rows}</div>
+        <div style="margin-top:auto;padding:3px 6px 0;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:${allDone?11:13}px;font-weight:${allDone?700:600};color:${stu.muted}">${foot}</span>
+          <span style="background:${allDone?stu.spot:stu.hl};color:${allDone?'#FFF':'#141414'};border:1.5px solid #141414;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700">${allDone?'搞定啦 ✓':'长按 ✓'}</span>
+        </div>`
+        : `<div style="flex:1;display:flex;align-items:center;justify-content:center"><span style="background:${stu.hl};border:2px solid #141414;border-radius:12px;padding:8px 14px;box-shadow:3px 3px 0 #141414;font-size:18px;font-weight:600">今天空空的</span></div>`}
+    </div>`
+  }
 }
 
-// ---- 由资料算出来的部分：NFC、战绩、设备状态 ----
-function renderDerived() {
-  if (!S) return
-  const d = S.device
-  const max = Math.max(1, ...d.days.map((x) => x.touches))
-  $('#pond').replaceChildren(el('div', { class: 'nums' },
-    el('div', { class: 'num' }, el('b', {}, String(d.today)), el('span', {}, '今天摸鱼')),
-    el('div', { class: 'num' }, el('b', {}, String(d.touches)), el('span', {}, '累计摸鱼')),
-    el('div', { class: 'num' }, el('b', {}, String(d.lucky)), el('span', {}, '摸到锦鲤'))),
-    d.days.length ? el('div', { class: 'days' }, d.days.map((x) => el('div', {}, el('i', { style: `height:${Math.round(x.touches / max * 52)}px`, title: `${x.touches} 次` }), x.day.slice(5))))
-      : el('p', { class: 'empty', style: 'margin:14px 0 0' }, d.last_seen_s === null ? '工牌还没连过这台电脑。连上后，这里会按天记录摸鱼次数。' : '还没有按天的记录，去工牌上摸两下。'))
+// ---- Render Editors ----
+function renderEditors() {
+  const p = state.profile
+  const meta = state.meta
+  const st = meta.styles[p.style]
 
-  const pill = $('#devState')
-  pill.className = 'pill ' + (d.online ? 'ok' : d.last_seen_s === null ? 'warn' : 'bad')
-  pill.lastChild.textContent = d.online ? `工牌在线${d.battery >= 0 ? ` · 电量 ${d.battery}%` : ''}` : d.last_seen_s === null ? '工牌还没连接过' : '工牌离线'
+  // Tabs
+  document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('on', b.dataset.tab === state.tab))
+  $('panelBadge').classList.toggle('hidden', state.tab !== 'badge')
+  $('panelSub').classList.toggle('hidden', state.tab !== 'sub')
+  $('pvSwitch').classList.toggle('hidden', state.tab !== 'sub')
+  document.querySelectorAll('#pvSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.pv === state.pvTab))
+
+  // Pairing banner (only if a badge requests pairing)
+  if (state.pairing.length) {
+    $('pairBar').classList.add('show')
+    $('pairText').textContent = `新工牌配对码 ${state.pairing[0].code}`
+  } else {
+    $('pairBar').classList.remove('show')
+  }
+
+  // Style cards
+  $('styleGrid').innerHTML = meta.styles.map((s) => `
+    <button type="button" class="style-btn ${s.id === p.style ? 'on' : ''}" data-style="${s.id}">
+      <div class="style-thumb" style="background:${s.thumbBg}">
+        <span style="width:14px;height:14px;border-radius:4px;background:${s.thumbA}"></span>
+        <span style="width:24px;height:8px;border-radius:3px;background:${s.thumbB}"></span>
+      </div>
+      <span class="style-name">${esc(s.name)}</span>
+    </button>
+  `).join('')
+
+  // Palettes
+  if (st.palettes.length > 1) {
+    $('palRow').classList.remove('hidden')
+    $('palRow').innerHTML = `<span class="pal-lbl">配色</span>` + st.palettes.map((pl, i) => `
+      <button type="button" class="pal-btn ${i === p.palette_idx ? 'on' : ''}" data-pal="${i}">
+        <span class="swatch" style="background:${pl.swatch}"></span>
+        <span>${esc(pl.name)}</span>
+      </button>
+    `).join('')
+  } else {
+    $('palRow').classList.add('hidden')
+  }
+
+  // Avatars
+  const isPxStyle = p.style === 3
+  $('avTabPreset').classList.toggle('on', state.avTab === 'preset')
+  $('avTabUpload').classList.toggle('on', state.avTab === 'upload')
+  $('avPresetBox').classList.toggle('hidden', state.avTab !== 'preset')
+  $('avUploadBox').classList.toggle('hidden', state.avTab !== 'upload')
+  if (state.avTab === 'preset') {
+    if (isPxStyle) {
+      $('avPresetBox').innerHTML = `<div class="px-grid">` + meta.pixelSprites.map((sp) => `
+        <button type="button" class="av-btn ${p.avatar_mode === 0 && p.pixel_preset === sp.id ? 'on' : ''}" data-px="${sp.id}">
+          <div class="av-stage" style="background:#264882;align-items:center"><svg viewBox="0 0 24 24" width="54" height="54" shape-rendering="crispEdges">${PIXEL_SVG[sp.id]}</svg></div>
+          <span class="av-name">${esc(sp.name)}</span>
+        </button>
+      `).join('') + `</div>`
+    } else {
+      const crtFilter = p.style === 4 ? (st.palettes[p.palette_idx]?.filter || '') : ''
+      $('avPresetBox').innerHTML = `<div class="av-grid">` + meta.builtinAvatars.map((av) => `
+        <button type="button" class="av-btn ${p.avatar_mode === 0 && p.avatar_preset === av.id ? 'on' : ''}" data-av="${av.id}">
+          <div class="av-stage" style="background:${p.style===4?'#08120B':av.stage}"><img src="${av.src}" alt="${esc(av.name)}" style="filter:${crtFilter}"></div>
+          <span class="av-name">${esc(av.name)}</span>
+        </button>
+      `).join('') + `</div>`
+    }
+  } else {
+    $('uploadPrevImg').src = avatarSrc()
+    $('uploadPrevImg').style.filter = p.style === 4 ? (st.palettes[p.palette_idx]?.filter || '') : ''
+  }
+
+  // Form inputs (avoid overwriting active typing cursor)
+  const setVal = (id, v) => { const el = $(id); if (document.activeElement !== el) el.value = v ?? '' }
+  setVal('inName', p.name)
+  setVal('inHandle', p.handle)
+  setVal('inTitle', p.title)
+  setVal('inTagline', p.tagline)
+  setVal('inEmp', p.emp_id)
+  setVal('inPassTag', p.pass_tag)
+  $('cntName').textContent = `${Math.ceil(cols(p.name)/2)}/4`
+  $('cntHandle').textContent = `${p.handle.length}/10`
+  $('cntTitle').textContent = `${Math.ceil(cols(p.title)/2)}/6`
+  $('cntTagline').textContent = `${Math.ceil(cols(p.tagline)/2)}/9`
+  $('inMbti').value = p.mbti || ''
+  $('fieldEmp').classList.toggle('hidden', p.style === 1)
+  $('fieldPassTag').classList.toggle('hidden', p.style !== 2)
+
+  // Bottom status / mood chips
+  if (st.hasStatus) {
+    $('statusMoodRow').classList.remove('hidden')
+    const colors = meta.statusColors
+    $('statusMoodRow').innerHTML = `<span class="pal-lbl">状态</span>` + p.statuses.map((s, i) => `
+      <button type="button" class="chip ${i === p.status ? 'on' : ''}" data-status="${i}">
+        <span class="chip-dot" style="background:${colors[i % colors.length]}"></span>${esc(s)}
+      </button>
+    `).join('')
+  } else if (st.hasMood) {
+    $('statusMoodRow').classList.remove('hidden')
+    $('statusMoodRow').innerHTML = `<span class="pal-lbl">心情</span>` + meta.moods.map((m) => `
+      <button type="button" class="chip ${m.id === p.mood_idx ? 'on' : ''}" data-mood="${m.id}">
+        <span class="chip-dot" style="background:${m.bg}"></span>${esc(m.text)}
+      </button>
+    `).join('')
+  } else {
+    $('statusMoodRow').classList.add('hidden')
+  }
+
+  // Sub-page controls
+  $('sceneWork').className = p.sub_scene === 0 ? 'on-lime' : ''
+  $('sceneStu').className = p.sub_scene === 1 ? 'on-lime' : ''
+  $('qrRound').className = p.qr_rounded ? 'on' : ''
+  $('qrSharp').className = !p.qr_rounded ? 'on' : ''
+
+  // QR slots
+  const qrs = p.qrs || []
+  $('qrList').innerHTML = qrs.map((q, i) => {
+    const ch = meta.qrChannels[q.channel] || meta.qrChannels[5]
+    const opts = meta.qrChannels.map((c) => `<option value="${c.id}" ${c.id === q.channel ? 'selected' : ''}>${esc(c.name)}</option>`).join('')
+    return `<div class="qr-row ${i === p.qr_idx ? 'on' : ''}" data-qr-pick="${i}">
+      <span class="qr-badge" style="background:${ch.spot}">${esc(ch.badge)}</span>
+      <select data-qr-ch="${i}">${opts}</select>
+      <input data-qr-lbl="${i}" value="${esc(q.label)}" maxlength="16" placeholder="底部说明">
+      <button type="button" class="qr-del" data-qr-del="${i}" aria-label="删除">×</button>
+    </div>`
+  }).join('')
+
+  // Memo rows (max 10, max 3 stars)
+  const memos = p.memos || []
+  const starCnt = memos.filter((m) => m.star).length
+  const starFull = starCnt >= 3
+  const firstUndone = memos.findIndex((m) => !m.done)
+  $('memoMeta').textContent = `${memos.length}/10 · ★ ${starCnt}/3`
+  $('memoList').innerHTML = memos.map((m, i) => `
+    <div class="memo-row ${i === firstUndone ? 'focus' : ''}">
+      <button type="button" class="memo-chk ${m.done ? 'done' : ''}" data-m-done="${i}">${m.done ? '✓' : ''}</button>
+      <span class="memo-txt ${m.done ? 'done' : ''}">${esc(m.text)}</span>
+      <button type="button" class="memo-mv" data-m-up="${i}" title="上移">↑</button>
+      <button type="button" class="memo-mv" data-m-dn="${i}" title="下移">↓</button>
+      <button type="button" class="memo-star ${m.star ? 'on' : (starFull ? 'full' : '')}" data-m-star="${i}" aria-label="重要星标">★</button>
+      <button type="button" class="memo-del" data-m-del="${i}" aria-label="删除">×</button>
+    </div>
+  `).join('')
+
+  renderScreen()
 }
 
-// ---- 启动 ----
-async function refresh() {
+function mutate(fn) {
+  fn(state.profile)
+  setDirty(true)
+  renderEditors()
+}
+
+async function syncToBadge() {
+  const btn = $('syncBtn')
+  btn.disabled = true
   try {
-    const next = await api('/api/profile')
-    const moved = S && next.version !== S.version
-    S = next
-    if (!dirty && !saving && (moved || !P)) adopt(true)       // 工牌上切了状态或皮肤：这里跟着变
-    renderDerived(); renderScreen()
-    $('#app').hidden = false; $('#down').style.display = 'none'
-  } catch {
-    if (!P) { $('#app').hidden = true; $('#down').style.display = 'block' }
-    const pill = $('#devState'); pill.className = 'pill bad'; pill.lastChild.textContent = '服务没连上'
+    const r = await fetch('/api/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state.profile),
+    })
+    const d = await r.json()
+    if (!r.ok) throw new Error(d.detail || '同步失败')
+    state.profile = d.profile
+    state.hasPhoto = d.hasPhoto
+    state.pairing = d.pairing || []
+    setDirty(false)
+    renderEditors()
+    showToast('已同步到工牌')
+  } catch (e) {
+    showToast(e.message, true)
+  } finally {
+    btn.disabled = false
   }
 }
-async function start() {
-  $('#mbti').replaceChildren(...MBTI.map((m) => el('option', { value: m }, m || '不显示')))
-  try { meta = await api('/api/meta') } catch { $('#down').style.display = 'block'; setTimeout(start, 3000); return }
-  $('#presets').append(...meta.presets.map((p) => {
-    const c = el('canvas', { width: 16, height: 16 })
-    const g = c.getContext('2d')
-    // Harness 重启前，运行中的旧版服务给的预设不带调色板：用经典预设的那套颜色画缩略图
-    const pal = p.palette || ['#000000', '#1B1D24', '#FF5263', '#C8FF3D', '#1B1D24', '#FFFFFF', '#8B6CFF', '#8B6CFF', '#FFFFFF', '#FFA826', '#3DD6FF', '#FF3DA5', '#35D07F', '#2E5BFF', '#E0483C', '#8A8F9C']
-    for (let i = 0; i < 256; i++) { const v = parseInt(p.avatar[i], 16); if (v) { g.fillStyle = pal[v]; g.fillRect(i % 16, i >> 4, 1, 1) } }
-    // 预设带自己的颜色：头像和调色板一起换
-    return el('button', { class: 'preset', type: 'button', title: p.name, 'aria-label': `预设头像：${p.name}`,
-      onclick: () => { P.avatar = p.avatar; if (p.palette) P.palette = [...p.palette]; renderGrid(); renderSwatches(); changed() } }, c)
-  }))
-  document.addEventListener('input', (e) => {
-    const t = e.target
-    if (t.dataset.k) { P[t.dataset.k] = t.value; changed() }
-    else if (t.id === 'recolor' && color) { P.palette[color] = t.value.toUpperCase(); renderGrid(); $('#swatches').children[color].style.background = t.value; changed() }
+
+async function handlePhotoFile(file) {
+  if (!file) return
+  $('photoDropText').textContent = '抠图处理中…'
+  const reader = new FileReader()
+  reader.onload = async () => {
+    try {
+      const r = await fetch('/api/photo/cutout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: reader.result }),
+      })
+      const d = await r.json()
+      if (!r.ok) throw new Error(d.detail || '图片处理失败')
+      state.profile.avatar_mode = 2
+      state.profile.photo_ver = d.profile.photo_ver
+      state.hasPhoto = d.hasPhoto
+      state.photoNonce++
+      setDirty(true)
+      renderEditors()
+      showToast('抠图完成，点击同步到工牌')
+    } catch (e) {
+      showToast(e.message, true)
+    } finally {
+      $('photoDropText').textContent = '拖入图片或点击上传'
+    }
+  }
+  reader.readAsDataURL(file)
+}
+
+async function handleQrFile(file) {
+  if (!file) return
+  if (state.profile.qrs.length >= 3) return showToast('最多支持 3 张名片码', true)
+  const reader = new FileReader()
+  reader.onload = async () => {
+    try {
+      const r = await fetch('/api/qr/decode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: reader.result }),
+      })
+      const d = await r.json()
+      if (!r.ok) throw new Error(d.detail || '二维码识别失败')
+      const url = d.url
+      const chIdx = url.includes('work.weixin') ? 0 : (url.includes('wechat.com') ? 1 : (url.includes('xhs') ? 2 : 3))
+      const ch = state.meta.qrChannels[chIdx]
+      mutate((p) => {
+        p.qrs.push({ url, channel: chIdx, label: ch.caption })
+        p.qr_idx = p.qrs.length - 1
+      })
+      state.pvTab = 'qr'
+      renderEditors()
+      showToast('已识别二维码，可先扫码核对')
+    } catch (e) {
+      showToast(e.message, true)
+    }
+  }
+  reader.readAsDataURL(file)
+}
+
+function sortMemos(list) {
+  return [
+    ...list.filter((x) => !x.done && x.star),
+    ...list.filter((x) => !x.done && !x.star),
+    ...list.filter((x) => x.done),
+  ]
+}
+
+function addMemoFromInput() {
+  const inp = $('memoInput')
+  const t = inp.value.trim()
+  if (!t) return
+  if (state.profile.memos.length >= 10) return showToast('最多保存 10 条待办', true)
+  mutate((p) => { p.memos = sortMemos([...p.memos, { text: t, done: false, star: false }]) })
+  inp.value = ''
+  state.pvTab = 'memo'
+  renderEditors()
+}
+
+// ---- Events ----
+document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => {
+  state.tab = b.dataset.tab
+  renderEditors()
+}))
+document.querySelectorAll('#pvSwitch button').forEach((b) => b.addEventListener('click', () => {
+  state.pvTab = b.dataset.pv
+  renderEditors()
+}))
+$('syncBtn').addEventListener('click', syncToBadge)
+
+$('pairApprove').addEventListener('click', async () => {
+  if (!state.pairing.length) return
+  await fetch('/api/pair/approve', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CB-Local': '1' }, body: JSON.stringify({ code: state.pairing[0].code }) })
+  state.pairing = []
+  renderEditors()
+  showToast('已允许工牌配对')
+})
+$('pairDeny').addEventListener('click', async () => {
+  if (!state.pairing.length) return
+  await fetch('/api/pair/deny', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CB-Local': '1' }, body: JSON.stringify({ code: state.pairing[0].code }) })
+  state.pairing = []
+  renderEditors()
+})
+
+$('styleGrid').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-style]')
+  if (!b) return
+  const id = Number(b.dataset.style)
+  mutate((p) => {
+    p.style = id
+    p.palette_idx = 0
+    p.sub_scene = (id === 1 || id === 2) ? 1 : 0
   })
-  for (const b of document.querySelectorAll('.tabs button')) b.onclick = () => {
-    tab = b.dataset.tab
-    answerShown = ''
-    for (const o of document.querySelectorAll('.tabs button')) o.setAttribute('aria-selected', String(o === b))
-    renderScreen()
+})
+$('palRow').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-pal]')
+  if (!b) return
+  mutate((p) => { p.palette_idx = Number(b.dataset.pal) })
+})
+$('avTabPreset').addEventListener('click', () => { state.avTab = 'preset'; renderEditors() })
+$('avTabUpload').addEventListener('click', () => { state.avTab = 'upload'; renderEditors() })
+$('avPresetBox').addEventListener('click', (e) => {
+  const av = e.target.closest('[data-av]')
+  if (av) return mutate((p) => { p.avatar_mode = 0; p.avatar_preset = Number(av.dataset.av) })
+  const px = e.target.closest('[data-px]')
+  if (px) return mutate((p) => { p.avatar_mode = 0; p.pixel_preset = Number(px.dataset.px) })
+})
+
+$('pickPhotoBtn').addEventListener('click', () => $('photoFile').click())
+$('photoFile').addEventListener('change', (e) => { handlePhotoFile(e.target.files[0]); e.target.value = '' })
+$('photoDrop').addEventListener('dragover', (e) => { e.preventDefault(); $('photoDrop').classList.add('drag') })
+$('photoDrop').addEventListener('dragleave', () => $('photoDrop').classList.remove('drag'))
+$('photoDrop').addEventListener('drop', (e) => { e.preventDefault(); $('photoDrop').classList.remove('drag'); handlePhotoFile(e.dataTransfer.files[0]) })
+
+$('inName').addEventListener('input', (e) => mutate((p) => { p.name = e.target.value }))
+$('inHandle').addEventListener('input', (e) => mutate((p) => { p.handle = e.target.value.replace(/^@+/, '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 10) }))
+$('inTitle').addEventListener('input', (e) => mutate((p) => { p.title = e.target.value }))
+$('inMbti').addEventListener('change', (e) => mutate((p) => { p.mbti = e.target.value }))
+$('inTagline').addEventListener('input', (e) => mutate((p) => { p.tagline = e.target.value }))
+$('inEmp').addEventListener('input', (e) => mutate((p) => { p.emp_id = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 6) }))
+$('inPassTag').addEventListener('input', (e) => mutate((p) => { p.pass_tag = e.target.value.toUpperCase().replace(/[^A-Z0-9 /]/g, '').slice(0, 12) }))
+
+$('statusMoodRow').addEventListener('click', (e) => {
+  const s = e.target.closest('[data-status]')
+  if (s) return mutate((p) => { p.status = Number(s.dataset.status) })
+  const m = e.target.closest('[data-mood]')
+  if (m) return mutate((p) => { p.mood_idx = Number(m.dataset.mood) })
+})
+
+$('sceneWork').addEventListener('click', () => mutate((p) => { p.sub_scene = 0 }))
+$('sceneStu').addEventListener('click', () => mutate((p) => { p.sub_scene = 1 }))
+$('qrRound').addEventListener('click', () => { state.pvTab = 'qr'; mutate((p) => { p.qr_rounded = true }) })
+$('qrSharp').addEventListener('click', () => { state.pvTab = 'qr'; mutate((p) => { p.qr_rounded = false }) })
+$('uploadQrBtn').addEventListener('click', () => $('qrFile').click())
+$('qrFile').addEventListener('change', (e) => { handleQrFile(e.target.files[0]); e.target.value = '' })
+$('addQrManual').addEventListener('click', () => {
+  if (state.profile.qrs.length >= 3) return showToast('最多支持 3 张名片码', true)
+  const url = prompt('粘贴名片短链（≤80 字符）', 'https://u.wechat.com/')
+  if (!url || !url.trim()) return
+  const chIdx = url.includes('work.weixin') ? 0 : (url.includes('wechat.com') ? 1 : 3)
+  const ch = state.meta.qrChannels[chIdx]
+  state.pvTab = 'qr'
+  mutate((p) => { p.qrs.push({ url: url.trim().slice(0, 80), channel: chIdx, label: ch.caption }); p.qr_idx = p.qrs.length - 1 })
+})
+
+$('qrList').addEventListener('click', (e) => {
+  const del = e.target.closest('[data-qr-del]')
+  if (del) {
+    const i = Number(del.dataset.qrDel)
+    return mutate((p) => { p.qrs.splice(i, 1); p.qr_idx = Math.max(0, Math.min(p.qr_idx, p.qrs.length - 1)) })
   }
-  // 预览里的 OK 键：在答案之书页翻一条看看大字排版（真正的答案由工牌随机出）
-  $('#okKey').onclick = () => {
-    if (tab !== 'answer') return
-    const pool = P.answers.length ? P.answers : ['再等等', '毫无疑问', '查查上次怎么做']
-    answerShown = pool[(pool.indexOf(answerShown) + 1) % pool.length]
-    renderScreen()
+  const row = e.target.closest('[data-qr-pick]')
+  if (row && !e.target.matches('select,input')) {
+    state.pvTab = 'qr'
+    state.profile.qr_idx = Number(row.dataset.qrPick)
+    renderEditors()
   }
-  const g = $('#grid')
-  g.addEventListener('pointerdown', (e) => { painting = true; g.setPointerCapture(e.pointerId); paint(e) })
-  g.addEventListener('pointermove', (e) => { if (painting) paint(e) })
-  g.addEventListener('pointerup', () => { painting = false })
-  g.addEventListener('pointercancel', () => { painting = false })
-  $('#clear').onclick = () => { P.avatar = '0'.repeat(256); renderGrid(); changed() }
-  const want = document.querySelector(`.tabs button[data-tab="${location.hash.slice(1)}"]`)      // 例如 /#link 直接看碰一碰页
-  if (want) want.onclick()
-  await refresh()
-  setInterval(refresh, 4000)
+})
+$('qrList').addEventListener('change', (e) => {
+  if (e.target.dataset.qrCh !== undefined) {
+    const i = Number(e.target.dataset.qrCh)
+    const ch = Number(e.target.value)
+    mutate((p) => { p.qrs[i].channel = ch; p.qrs[i].label = state.meta.qrChannels[ch].caption })
+  }
+})
+$('qrList').addEventListener('input', (e) => {
+  if (e.target.dataset.qrLbl !== undefined) {
+    const i = Number(e.target.dataset.qrLbl)
+    mutate((p) => { p.qrs[i].label = e.target.value })
+  }
+})
+
+$('memoAddBtn').addEventListener('click', addMemoFromInput)
+$('memoInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') addMemoFromInput() })
+$('memoList').addEventListener('click', (e) => {
+  const done = e.target.closest('[data-m-done]')
+  if (done) {
+    const i = Number(done.dataset.mDone)
+    state.pvTab = 'memo'
+    return mutate((p) => {
+      p.memos[i].done = !p.memos[i].done
+      p.memos = sortMemos(p.memos)
+    })
+  }
+  const star = e.target.closest('[data-m-star]')
+  if (star) {
+    const i = Number(star.dataset.mStar)
+    const m = state.profile.memos[i]
+    const cnt = state.profile.memos.filter((x) => x.star).length
+    if (!m.star && cnt >= 3) return showToast('星标最多允许标 3 个', true)
+    state.pvTab = 'memo'
+    return mutate((p) => {
+      p.memos[i].star = !p.memos[i].star
+      p.memos = sortMemos(p.memos)
+    })
+  }
+  const up = e.target.closest('[data-m-up]')
+  if (up) {
+    const i = Number(up.dataset.mUp)
+    if (i > 0) mutate((p) => { [p.memos[i-1], p.memos[i]] = [p.memos[i], p.memos[i-1]] })
+    return
+  }
+  const dn = e.target.closest('[data-m-dn]')
+  if (dn) {
+    const i = Number(dn.dataset.mDn)
+    if (i < state.profile.memos.length - 1) mutate((p) => { [p.memos[i+1], p.memos[i]] = [p.memos[i], p.memos[i+1]] })
+    return
+  }
+  const del = e.target.closest('[data-m-del]')
+  if (del) {
+    const i = Number(del.dataset.mDel)
+    state.pvTab = 'memo'
+    return mutate((p) => { p.memos.splice(i, 1) })
+  }
+})
+
+// ---- Init ----
+async function init() {
+  const [metaR, profR] = await Promise.all([fetch('/api/meta'), fetch('/api/profile')])
+  state.meta = await metaR.json()
+  const snap = await profR.json()
+  state.profile = snap.profile
+  state.profile.memos = sortMemos(state.profile.memos || [])
+  state.hasPhoto = snap.hasPhoto
+  state.pairing = snap.pairing || []
+  state.avTab = state.profile.avatar_mode === 2 ? 'upload' : 'preset'
+
+  $('inMbti').innerHTML = `<option value="">不展示</option>` +
+    state.meta.mbtiOptions.map((m) => `<option value="${m}">${m}</option>`).join('')
+  setDirty(false)
+  renderEditors()
 }
-start()
+init()
 </script>
 </body>
 </html>

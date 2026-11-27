@@ -1,7 +1,7 @@
 {
   "name": "albis-aipassport-badge",
-  "version": "0.6.1",
-  "description": "Cyber badge for FoloToy AI Passport on DeepSeek Harness: edit your badge, pixel avatar, skins, notes and answers on the computer, synced to the device. AI Passport 赛博工牌。",
+  "version": "1.0.0",
+  "description": "Cyber badge for FoloToy AI Passport on DeepSeek Harness: customize 5 badge styles, avatars, QR business cards, and todo memos with live preview and AI chat sync. AI Passport 赛博工牌。",
   "author": "albis",
   "license": "MIT",
   "repository": {
