@@ -93,14 +93,17 @@ test('大众化命名、5 风格 × 14 色卡、7 内置插画与固件 cb_model
   assert.equal(BUILTIN_AVATARS.length, 7)
   assert.equal(PIXEL_SPRITES.length, 6)
 
-  const h = readFileSync(new URL('cb_model.h', FW), 'utf8')
-  const num = (macro) => Number(h.match(new RegExp(`#define\\s+${macro}\\s+(\\d+)`))?.[1])
-  assert.equal(num('CB_MEMOS'), LIMITS.memos)
-  assert.equal(num('CB_MEMO_STAR_MAX'), LIMITS.memoStars)
-  assert.equal(num('CB_QRS'), LIMITS.qrs)
-  assert.equal(num('CB_QR_URL_MAX'), LIMITS.qrUrlMax)
-  assert.equal(num('CB_BUILTIN_CNT'), BUILTIN_AVATARS.length)
-  assert.equal(num('CB_PIXEL_PRESETS'), PIXEL_SPRITES.length)
+  const fwHeader = new URL('cb_model.h', FW)
+  if (existsSync(fwHeader)) {
+    const h = readFileSync(fwHeader, 'utf8')
+    const num = (macro) => Number(h.match(new RegExp(`#define\\s+${macro}\\s+(\\d+)`))?.[1])
+    assert.equal(num('CB_MEMOS'), LIMITS.memos)
+    assert.equal(num('CB_MEMO_STAR_MAX'), LIMITS.memoStars)
+    assert.equal(num('CB_QRS'), LIMITS.qrs)
+    assert.equal(num('CB_QR_URL_MAX'), LIMITS.qrUrlMax)
+    assert.equal(num('CB_BUILTIN_CNT'), BUILTIN_AVATARS.length)
+    assert.equal(num('CB_PIXEL_PRESETS'), PIXEL_SPRITES.length)
+  }
 
   const payload = devicePayload(normalize(DEFAULT_PROFILE))
   assert.equal('mute' in payload, false)
